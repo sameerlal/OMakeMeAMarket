@@ -1,0 +1,8 @@
+#require "oUnit";;
+#require "yojson";;
+#require "ANSITerminal";;
+#directory "_build";;
+#load "marketmaker.cmo";;
+#load "parse.cmo";;
+#load "trader.cmo";;
+#load "state.cmo";;

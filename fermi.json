@@ -1,0 +1,23 @@
+{
+  "id": "1",
+  "fermi": [
+    {
+      "question": "What is the volume of air that I breathe in one day?",
+      "answer": "2880"
+    },
+    {
+      "question": "How many people in the world are talking on their cell phones in any given minute?",
+      "answer": "125000000"
+    }
+  ],
+  "situation": [
+    {
+      "event": "Flash Crash, all stocks are down",
+      "effect": "-10%"
+    },
+    {
+      "event": "Interest rates decrease",
+      "effect": "+2%"
+    }
+  ]
+}

@@ -20,7 +20,7 @@ let init_trader_players true_value =
 
 let rec parse_user_input state = 
   print_endline "\n \n Make a market:   \n";
-  print_string "$ ";
+  print_string "> ";
   match read_line() with
   | exception End_of_file -> print_endline "Try again . . ."; parse_user_input state
   | user_response -> begin
@@ -39,11 +39,12 @@ let fsm fermi (state: big_state) =
   else 
     match user_command with 
     | Command.Quit -> print_endline "QUIT"; exit 0
+    | Command.Inventory -> (Marketmaker.display_data state.mmstate); state
     | Command.Set phr -> 
       let bid = int_of_string (List.nth phr 0) in 
       let ask = int_of_string (List.nth phr 1) in (* TODO  UPDATE STATE BELOW TO REFLECT NEW STATES *)
       let trade_transaction = Trader.make_transaction (Marketmaker.get_timestamp state.mmstate) bid ask "blank" in
-      let trader_response = Trader.make_trade state.traders.simple_ai trade_transaction in 
+      let trader_response = Trader.make_trade_dumb state.traders.simple_ai trade_transaction in 
       begin
         match trader_response with 
         | None -> print_endline "No Trade occured"; 

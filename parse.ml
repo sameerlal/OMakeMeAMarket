@@ -71,7 +71,7 @@ let get_effect_from_situation (sit: situation) =
 (* Introduction *)
 let introduction unit = 
   print_endline ("Welcome to OMakeMeAMarket!  Today, you are the sole market maker of a coin called CamelCoin that we have developed. \n");
-  print_endline ("You will be making a market for several high frequency traders in USD.  To make a market, use the notation: bid@ask \n");
-  print_endline ("For example, if your market is 10 USD to 20 USD, you write:  10@20.  Invalid inputs will prompt you again\n ");
+  print_endline ("You will be making a market for several high frequency traders in USD.  To make a market, use the notation: set bid ask \n");
+  print_endline ("For example, if your market is 10 USD to 20 USD, you write:  set 10 20.  Invalid inputs will prompt you again\n ");
   print_endline ("Now that we are familiar with the notation, let us reveal a hint to the true cost of a CamelCoin.   ")
 

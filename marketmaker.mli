@@ -9,3 +9,4 @@ val generate_receive_transaction : int -> string -> int -> int -> receive_transa
 val stringify_bid_ask : t -> string
 val get_outstandingshares : t -> int
 val increment_timestep : t -> t
+val display_data : t -> unit

@@ -24,17 +24,17 @@ let parse str =
   let filtered = List.filter (fun s -> String.length s >= 1) wordlst in 
   if List.length filtered > 0 then let cmd = List.hd filtered in 
     match cmd with
-    | "Set" -> if List.length filtered > 0 then 
+    | "set" -> if List.length filtered > 0 then 
         let obj = begin match filtered with 
           | [] -> []
           | h::t -> t end
         in (Set obj) else raise Malformed
-    | "Profit" -> if List.length filtered = 1 then Profit else raise Malformed
-    | "Inventory" -> if List.length filtered = 1 then Inventory else raise Malformed
-    | "Orderbook" -> if List.length filtered = 1 then Orderbook else raise Malformed
-    | "First Trade" -> if List.length filtered = 1 then First_Trade else raise Malformed
-    | "Last_Trade" -> if List.length filtered = 1 then Last_Trade else raise Malformed
-    | "Quit" -> if List.length filtered = 1 then Quit else raise Malformed
+    | "profit" -> if List.length filtered = 1 then Profit else raise Malformed
+    | "inventory" -> if List.length filtered = 1 then Inventory else raise Malformed
+    | "orderbook" -> if List.length filtered = 1 then Orderbook else raise Malformed
+    | "first Trade" -> if List.length filtered = 1 then First_Trade else raise Malformed
+    | "last_Trade" -> if List.length filtered = 1 then Last_Trade else raise Malformed
+    | "quit" -> if List.length filtered = 1 then Quit else raise Malformed
     | "inventory" -> Inventory
     | _ -> raise Malformed
   else 

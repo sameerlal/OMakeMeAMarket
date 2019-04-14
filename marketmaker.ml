@@ -1,4 +1,5 @@
 open Pervasives
+open Sys
 
 (* holds bid ask struct *)
 type bidask = {
@@ -68,6 +69,17 @@ let init_market game : t =
 type result = Legal of t | Illegal
 
 
+let display_data (state : t) = 
+  ANSITerminal.(print_string [red]
+                  "\n\n ------------------- Market Maker Statistics ------------------- \n");
+  print_string ("Current Bid/Ask : ");
+  print_string (" | Bid: " ^ (string_of_int state.currbidask.bid));
+  print_string (" | Ask: " ^ (string_of_int state.currbidask.ask));
+  print_endline ("|  Spread:  " ^ (string_of_int state.currbidask.spread));
+  print_string (" Time Stamp:   " ^ (string_of_int state.timestamp));
+  print_endline ("Current Profit:  " ^ (string_of_int state.curr_profit));
+  print_endline ("Outstanding Shares: " ^ (string_of_int state.orderbook.outstanding_shares));
+  ANSITerminal.(print_string [green] "\n \n ---------------------------------------------------------\n " )
 
 let calculate_new_profit (transaction:receive_transaction) market : t =
   failwith "Unimplemented"
@@ -97,10 +109,11 @@ let transaction (transaction:receive_transaction) (market:t) =
       spread = transaction.transaction.spread;
     };
     timestamp = transaction.timestamp + 1;
-    curr_profit = market.curr_profit; (* TODO *)
+    curr_profit = market.curr_profit + (if transaction.trade_type = "lift" 
+                                        then transaction.transaction.ask else -1*transaction.transaction.bid); (* TODO *)
     orderbook = {
       outstanding_shares = market.orderbook.outstanding_shares 
-                           + (if transaction.trade_type = "hit" then 1 else -1 ); (* TODO *)
+                           + (if transaction.trade_type = "hit" then 1 else -1 );
     }
   }
 

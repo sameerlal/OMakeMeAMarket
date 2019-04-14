@@ -1,4 +1,5 @@
 open Pervasives
+open Random
 
 type bidask = {
   bid: int;
@@ -29,6 +30,7 @@ type t = {
 
 (**[init_trader unit] is a trader of type t. *)
 let init_trader true_value =
+  print_endline (string_of_int true_value);
   {true_value = true_value; avg_buy_value = 0; profit = 0; cash = 1000000; inventory = 0; 
    orderbook = {transactions = []; buys = 0; sells = 0}}
 
@@ -113,6 +115,16 @@ let make_trade trader transaction =
 
 
 let make_trade_dumb (trader:t) (transaction:transaction) = 
+  let time = Random.int 2 in 
+  let seed = (time) mod 2 in 
+  print_endline (string_of_int time);
+  print_endline (string_of_int seed);
+  if (abs (transaction.bidask.ask - trader.true_value) < 10) &&
+     (abs (transaction.bidask.bid - trader.true_value) < 10 ) then
+    match seed with
+    | 0 -> Some (trader, "hit")
+    | 1 -> Some (trader, "lift")
+  else 
   if transaction.bidask.ask < trader.true_value + 10 
   then Some (trader, "lift")
   else if transaction.bidask.bid > trader.true_value - 10

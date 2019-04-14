@@ -22,7 +22,6 @@ type t = {
   orderbook: orderbook
 }
 
-
 (* Trade variant.  To be sent to engine *)
 
 type send_market = {
@@ -68,7 +67,6 @@ let init_market game : t =
 
 type result = Legal of t | Illegal
 
-
 let display_data (state : t) = 
   ANSITerminal.(print_string [red]
                   "\n\n ------------------- Market Maker Statistics ------------------- \n");
@@ -92,8 +90,6 @@ let calculate_new_profit (transaction:receive_transaction) market : t =
    [market] of type t.*)
 let readjust_spread (transaction:receive_transaction) (market:t) : t =
   failwith "Unimplemented"
-
-
 
 (**[transaction market trade] is the new state of the marketmaker after a trade.
    It takes in a type t [market] and a [trade] and sets a new inventory, 
@@ -141,9 +137,3 @@ let stringify_bid_ask (market : t) =
 
 let get_timestamp (market : t) = 
   market.timestamp
-
-
-
-
-
-

@@ -100,10 +100,14 @@ let transaction (transaction:receive_transaction) (market:t) =
     curr_profit = market.curr_profit; (* TODO *)
     orderbook = {
       outstanding_shares = market.orderbook.outstanding_shares 
-                           + 1; (* TODO *)
+                           + (if transaction.trade_type = "hit" then 1 else -1 ); (* TODO *)
     }
   }
 
+let increment_timestep (market : t) =
+  {market with 
+   timestamp = market.timestamp + 1
+  }
 
 (**[send_market market] is the new marketmaker after the player has set new 
    bid/ask prices. *)
@@ -114,10 +118,13 @@ let get_profit market =
   market.curr_profit
 
 let get_outstandingshares market =
-  market.outstanding_shares
+  market.orderbook.outstanding_shares
 
 let get_orderbook (market : t) =
   market.orderbook
+
+let stringify_bid_ask (market : t) =
+  (string_of_int market.currbidask.bid) ^ "@" ^ (string_of_int market.currbidask.ask)
 
 let get_timestamp (market : t) = 
   market.timestamp

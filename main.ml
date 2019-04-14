@@ -15,11 +15,11 @@ type big_state = {
   traders : trader_players
 }
 
-let init_trader_players = 
-  { simple_ai = (Trader.init_trader ()) }
+let init_trader_players true_value = 
+  { simple_ai = (Trader.init_trader true_value) }
 
 let rec parse_user_input state = 
-  print_endline "\n \n Set market  \n";
+  print_endline "\n \n Make a market:   \n";
   print_string "$ ";
   match read_line() with
   | exception End_of_file -> print_endline "Try again . . ."; parse_user_input state
@@ -32,7 +32,6 @@ let rec parse_user_input state =
 
 
 let fsm fermi (state: big_state) = 
-  print_endline ("reached fsm");
   let user_command = parse_user_input state in 
   if (Marketmaker.get_timestamp state.mmstate) = 69 then 
     (* TODO CHANGE STATE WITH NEW EVENTS *)
@@ -47,7 +46,11 @@ let fsm fermi (state: big_state) =
       let trader_response = Trader.make_trade state.traders.simple_ai trade_transaction in 
       begin
         match trader_response with 
-        | None -> print_endline "No Trade occured"; state
+        | None -> print_endline "No Trade occured"; 
+          {
+            state with 
+            mmstate = (Marketmaker.increment_timestep state.mmstate)
+          }
         | Some (new_trader_state, response) -> 
           let new_MM_state = Marketmaker.transaction 
               (Marketmaker.generate_receive_transaction (Marketmaker.get_timestamp state.mmstate) 
@@ -68,12 +71,14 @@ let fsm fermi (state: big_state) =
 
 
 let rec cli fermi big_state = 
+  ANSITerminal.(print_string [blue]
+                  "\n\n ------------------- Statistics ------------------- \n");
   print_string ("Timestamp ");
-  print_endline (" xxxx");
-  print_string (" Prev. bid/ask:  ");
-  print_endline (" xxxx ");
-  print_string (" Outstanding Shares: " );
-  print_endline (" xxxx ");
+  print_string ( string_of_int (Marketmaker.get_timestamp big_state.mmstate + 1));
+  print_string (" |  Prev. bid/ask:  ");
+  print_string (Marketmaker.stringify_bid_ask big_state.mmstate);
+  print_string (" |  Outstanding Shares: " );
+  print_string (string_of_int (Marketmaker.get_outstandingshares big_state.mmstate));
   match (Marketmaker.get_timestamp big_state.mmstate) with
   | 10 -> print_endline ("GAME OVER ");
     print_endline (" ADD STATISTICS AT END ");
@@ -82,10 +87,10 @@ let rec cli fermi big_state =
 
 
 
-let init_big_state = 
+let init_big_state true_value = 
   {
     mmstate =  Marketmaker.init_market "init";
-    traders = init_trader_players;
+    traders = init_trader_players true_value;
   }
 
 
@@ -93,9 +98,10 @@ let play_game f =
   Parse.introduction ();
   let obtained_json = Yojson.Basic.from_file f in
   let fermi = Parse.from_json obtained_json in
+  let true_value = Parse.get_answer fermi in 
   print_endline (Parse.get_question fermi);
   print_endline ("Let us begin... make your market:  ");
-  cli fermi init_big_state
+  cli fermi (init_big_state (int_of_string true_value))
 
 let main () = 
   ANSITerminal.(print_string [blue]

@@ -28,13 +28,13 @@ type t = {
 }
 
 (**[init_trader unit] is a trader of type t. *)
-let init_trader unit =
-  {true_value = 50; avg_buy_value = 0; profit = 0; cash = 200; inventory = 0; 
+let init_trader true_value =
+  {true_value = true_value; avg_buy_value = 0; profit = 0; cash = 1000000; inventory = 0; 
    orderbook = {transactions = []; buys = 0; sells = 0}}
 
 (**[get_curr_profit cash init_cash msell_price inventory] is the current 
    running profit of the trader. *)
-let get_curr_profit cash ?(init_cash = 200) msell_price inventory =
+let get_curr_profit cash ?(init_cash = 1000000) msell_price inventory =
   inventory * msell_price + cash - init_cash
 
 
@@ -64,13 +64,13 @@ let make_trade trader transaction =
   if trader.orderbook.buys = 0 then if buy_value < trader.true_value then
       let new_buys = trader.orderbook.buys + 1 in
       let new_sells = trader.orderbook.sells in 
-      let new_cash = trader.cash + buy_value in
+      let new_cash = trader.cash - buy_value in
       let newtransaction = {
         transaction with order_type = "bid"
       } in
-      let t = {trader with avg_buy_value = (avg_val + buy_value) / new_buys; 
+      let t = {trader with avg_buy_value = (avg_val* (new_buys - 1) + buy_value) / new_buys; 
                            profit = (get_curr_profit new_cash sell_value inv+1); 
-                           inventory = inv+1; 
+                           inventory = inv + 1; 
                            orderbook = {transactions = newtransaction::book; 
                                         buys = new_buys; sells = new_sells}} in
       Some (t, "hit")
@@ -102,6 +102,35 @@ let make_trade trader transaction =
     Some (t, "hit")
   else None
 
+
+
+(* type transaction = {
+   timestamp : int;
+   bidask: bidask;
+   order_type : string; (* bid or ask *)
+   } 
+*)
+
+(* let adjust_t hit_or_lift price shares (trader: t) =
+   {trader with
+
+   avg_buy_value = 
+   profit = 
+   cash = 
+   inventory = 
+   orderbook  = 
+   }
+
+
+   let make_trade_dumb (trader:t) (transaction:transaction) = 
+   failwith "Unimplemented" *)
+
+
+
+
+
+
+
 (**[make_buy trader transaction] is a pair of new type t trader (or the old 
    trader depending on whether the trader will accept the marketmaker's offer 
    for the security) and bool indicating whether trade was accepted. *)
@@ -110,3 +139,5 @@ let make_trade trader transaction =
    of the game. *)
 let get_final_profit trader =
   trader.profit + (trader.inventory * trader.true_value)
+
+

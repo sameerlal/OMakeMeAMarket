@@ -63,9 +63,10 @@ let get_event_from_situation (sit : situation) =
    if it it causes the price to rise or to fall *)
 let get_effect_from_situation (sit: situation) = 
   let s = (String.get sit.effect 0) in
+  let rest = (String.sub sit.effect 1 (String.length sit.effect)) in 
   match s with
-  | '+' -> Some ("increase", (String.sub (string_of_int 1) (String.length sit.effect)))
-  | '-' -> Some ("increase", (String.sub (string_of_int 1) (String.length sit.effect)))
+  | '+' -> Some ("increase", rest)
+  | '-' -> Some ("increase", rest)
   | _ -> failwith "Error with situation's effect value in json"
 
 (* Introduction *)

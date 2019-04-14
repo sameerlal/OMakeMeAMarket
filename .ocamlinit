@@ -6,3 +6,4 @@
 #load "parse.cmo";;
 #load "trader.cmo";;
 #load "state.cmo";;
+#load "stats.cmo";;

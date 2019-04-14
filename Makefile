@@ -1,4 +1,4 @@
-MODULES=marketmaker trader command parse main
+MODULES=marketmaker trader command parse stats main
 OBJECTS=$(MODULES:=.cmo)
 MLS=$(MODULES:=.ml)
 MLIS=$(MODULES:=.mli)

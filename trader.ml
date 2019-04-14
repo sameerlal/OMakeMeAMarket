@@ -27,6 +27,7 @@ type t = {
   orderbook : orderbook;
 }
 
+(**[init_trader unit] is a trader of type t. *)
 let init_trader unit =
   {true_value = 50; avg_buy_value = 0; profit = 0; cash = 200; inventory = 0; 
    orderbook = {transactions = []; buys = 0; sells = 0}}

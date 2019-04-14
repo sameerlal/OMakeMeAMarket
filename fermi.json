@@ -6,8 +6,8 @@
       "answer": "2880"
     },
     {
-      "question": "How many people in the world are talking on their cell phones in any given minute?",
-      "answer": "125000000"
+      "question": "How many people in the world are talking on their cell phones in any given minute? (in millions)",
+      "answer": "125"
     }
   ],
   "situation": [

@@ -23,7 +23,7 @@ type t = {
   avg_buy_value : int;
   profit : int;
   cash : int;
-  inventory : int;
+  inventory : int; (* Total number of shares owned *)
   orderbook : orderbook;
 }
 
@@ -70,7 +70,7 @@ let make_trade trader transaction =
       } in
       let t = {trader with avg_buy_value = (avg_val* (new_buys - 1) + buy_value) / new_buys; 
                            profit = (get_curr_profit new_cash sell_value inv+1); 
-                           inventory = inv + 1; 
+                           inventory = inv - 1; 
                            orderbook = {transactions = newtransaction::book; 
                                         buys = new_buys; sells = new_sells}} in
       Some (t, "hit")
@@ -83,7 +83,7 @@ let make_trade trader transaction =
       transaction with order_type = "ask"
     } in
     let t = {trader with profit = (get_curr_profit new_cash sell_value inv-1); 
-                         inventory = inv-1; 
+                         inventory = inv + 1; 
                          orderbook = {transactions = newtransaction::book; 
                                       buys = new_buys; sells = new_sells}} in 
     Some (t, "lift")
@@ -96,7 +96,7 @@ let make_trade trader transaction =
     } in
     let t = {trader with avg_buy_value = (avg_val + buy_value) / new_buys; 
                          profit = (get_curr_profit new_cash sell_value inv+1); 
-                         inventory = inv+1; 
+                         inventory = inv - 1; 
                          orderbook = {transactions = newtransaction::book; 
                                       buys = new_buys; sells = new_sells}} in
     Some (t, "hit")
@@ -111,19 +111,13 @@ let make_trade trader transaction =
    } 
 *)
 
-(* let adjust_t hit_or_lift price shares (trader: t) =
-   {trader with
 
-   avg_buy_value = 
-   profit = 
-   cash = 
-   inventory = 
-   orderbook  = 
-   }
-
-
-   let make_trade_dumb (trader:t) (transaction:transaction) = 
-   failwith "Unimplemented" *)
+let make_trade_dumb (trader:t) (transaction:transaction) = 
+  if transaction.bidask.ask < trader.true_value + 10 
+  then Some (trader, "lift")
+  else if transaction.bidask.bid > trader.true_value - 10
+  then Some (trader, "hit")
+  else None
 
 
 

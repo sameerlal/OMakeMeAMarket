@@ -3,7 +3,6 @@ open Pervasives
 (* holds bid ask struct *)
 type bidask = {
   trade_type : string;
-  number_of_shares: int;
   bid: int;
   ask: int;
   spread: int;
@@ -32,11 +31,22 @@ type send_market = {
 
 type receive_transaction =  {
   timestamp : int;
-  trader_id : string;
   trade_type : string; (* hit the bid or lifted offer *)
   transaction : bidask;
 }
 
+
+let generate_receive_transaction timestamp trade_type bid ask =
+  {
+    timestamp = timestamp;
+    trade_type = trade_type;
+    transaction = {
+      trade_type = trade_type;
+      bid = bid;
+      ask = ask;
+      spread = ask - bid;
+    }
+  }
 
 (**[init_market game] is the initial state of the market after a [game] is 
    started. *)
@@ -44,7 +54,6 @@ let init_market game : t =
   {
     currbidask = {
       trade_type = "init";
-      number_of_shares = 0;
       bid = 0;
       ask = 0;
       spread = 0;
@@ -76,21 +85,22 @@ let readjust_spread (transaction:receive_transaction) (market:t) : t =
 
 (**[transaction market trade] is the new state of the marketmaker after a trade.
    It takes in a type t [market] and a [trade] and sets a new inventory, 
-   bidask, timestamp, orderbook and curr_profit for the marketmaker.*)
+   bidask, timestamp, orderbook and curr_profit for the marketmaker.
+   We update the timestamp here.
+*)
 let transaction (transaction:receive_transaction) (market:t) =
   {
     currbidask = {
       trade_type = transaction.trade_type;
-      number_of_shares = market.currbidask.number_of_shares + transaction.transaction.number_of_shares;
       bid = transaction.transaction.bid;
       ask = transaction.transaction.ask;
       spread = transaction.transaction.spread;
     };
-    timestamp = transaction.timestamp;
+    timestamp = transaction.timestamp + 1;
     curr_profit = market.curr_profit; (* TODO *)
     orderbook = {
       outstanding_shares = market.orderbook.outstanding_shares 
-                           + transaction.transaction.number_of_shares; (* TODO *)
+                           + 1; (* TODO *)
     }
   }
 

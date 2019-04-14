@@ -21,10 +21,10 @@ exception Malformed
            Malformed if not a recognized command;*)
 let parse str =
   let wordlst = String.split_on_char ' ' (String.trim str) in 
-  let filtered = List.filter (fun s -> String.length s > 1) wordlst in 
+  let filtered = List.filter (fun s -> String.length s >= 1) wordlst in 
   if List.length filtered > 0 then let cmd = List.hd filtered in 
     match cmd with
-    | "Set" -> if List.length filtered > 1 then 
+    | "Set" -> if List.length filtered > 0 then 
         let obj = begin match filtered with 
           | [] -> []
           | h::t -> t end

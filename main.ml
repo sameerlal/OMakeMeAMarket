@@ -29,6 +29,8 @@ let rec parse_user_input state =
       | Command.Malformed -> print_endline "Error in command."; parse_user_input state  
     end
 
+
+
 let fsm fermi (state: big_state) = 
   print_endline ("reached fsm");
   let user_command = parse_user_input state in 
@@ -47,10 +49,19 @@ let fsm fermi (state: big_state) =
         match trader_response with 
         | None -> print_endline "No Trade occured"; state
         | Some (new_trader_state, response) -> 
+          let new_MM_state = Marketmaker.transaction 
+              (Marketmaker.generate_receive_transaction (Marketmaker.get_timestamp state.mmstate) 
+                 response bid ask) state.mmstate in 
+          let new_state = {
+            mmstate = new_MM_state;
+            traders = {
+              simple_ai = new_trader_state
+            }
+          } in 
           match response with
           (*  TODO   UPDATE THE STATES BELOW IWTH THE NEW MMSTATE AND TRADER STATE *)
-          | "lift" -> print_endline "Trader has lifted your offer"; state
-          | "hit" -> print_endline "Trader has hit your bid"; state 
+          | "lift" -> print_endline "Trader has lifted your offer"; new_state
+          | "hit" -> print_endline "Trader has hit your bid"; new_state
           | _ -> print_endline "error in trader's make trade"; exit 2
       end
     | _ -> print_endline "Done"; state

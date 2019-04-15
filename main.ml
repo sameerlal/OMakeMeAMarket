@@ -3,6 +3,7 @@ open Marketmaker
 open Trader
 open Command
 open Parse
+open Gui
 
 exception UnknownFile
 
@@ -40,6 +41,7 @@ let fsm fermi (state: big_state) =
     match user_command with 
     | Command.Quit -> print_endline "QUIT"; exit 0
     | Command.Inventory -> (Marketmaker.display_data state.mmstate); state
+    | Command.Help -> Gui.display_help (); state
     | Command.Set phr -> 
       let bid = int_of_string (List.nth phr 0) in 
       let ask = int_of_string (List.nth phr 1) in (* TODO  UPDATE STATE BELOW TO REFLECT NEW STATES *)
@@ -95,7 +97,7 @@ let init_big_state true_value =
 
 
 let play_game f =
-  Parse.introduction ();
+  Gui.introduction ();
   let obtained_json = Yojson.Basic.from_file f in
   let fermi = Parse.from_json obtained_json in
   let true_value = Parse.get_answer fermi in 
@@ -104,11 +106,9 @@ let play_game f =
   cli fermi (init_big_state (int_of_string true_value))
 
 let main () = 
-  ANSITerminal.(print_string [blue]
-                  "\n\nWelcome to the CamlCoin exchange! Here you will practice your maket
-                  making skills \n");
-  print_endline "Please enter the name of the file:  \n";
+  Gui.preamble ();
   print_string  "> ";
+
   match read_line () with
   | exception End_of_file -> ()
   | file_name -> play_game file_name

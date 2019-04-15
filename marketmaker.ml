@@ -76,7 +76,7 @@ let display_data (state : t) =
   print_endline ("|  Spread:  " ^ (string_of_int state.currbidask.spread));
   print_string (" Time Stamp:   " ^ (string_of_int state.timestamp));
   print_endline ("Current Profit:  " ^ (string_of_int state.curr_profit));
-  print_endline ("Outstanding Shares: " ^ (string_of_int state.orderbook.outstanding_shares));
+  print_endline ("Difference from start: " ^ (string_of_int state.orderbook.outstanding_shares));
   ANSITerminal.(print_string [green] "\n \n ---------------------------------------------------------\n " )
 
 let calculate_new_profit (transaction:receive_transaction) market : t =

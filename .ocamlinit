@@ -7,3 +7,4 @@
 #load "trader.cmo";;
 #load "state.cmo";;
 #load "stats.cmo";;
+#load "gui.cmo";;

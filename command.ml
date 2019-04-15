@@ -3,13 +3,7 @@ open Pervasives
 type object_phrase = string list
 
 type command = 
-  | Profit
-  | Set of object_phrase 
-  | Inventory
-  | Orderbook
-  | First_Trade
-  | Last_Trade
-  | Quit
+  | Profit | Set of object_phrase  | Inventory | Orderbook | First_Trade | Last_Trade   | Help  | Quit
 
 exception Empty
 
@@ -35,7 +29,7 @@ let parse str =
     | "first Trade" -> if List.length filtered = 1 then First_Trade else raise Malformed
     | "last_Trade" -> if List.length filtered = 1 then Last_Trade else raise Malformed
     | "quit" -> if List.length filtered = 1 then Quit else raise Malformed
-    | "inventory" -> Inventory
+    | "help" -> Help
     | _ -> raise Malformed
   else 
     raise Empty

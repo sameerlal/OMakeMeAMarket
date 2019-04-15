@@ -35,17 +35,18 @@ let rec parse_user_input state =
 let fsm fermi (state: big_state) = 
   let user_command = parse_user_input state in 
   if (Marketmaker.get_timestamp state.mmstate) = 69 then 
-    (* TODO CHANGE STATE WITH NEW EVENTS *)
+    (* TODO IN NEXT PHASE:  CHANGE STATE WITH NEW EVENTS *)
     state 
   else 
     match user_command with 
     | Command.Quit -> print_endline "QUIT"; exit 0
     | Command.Inventory -> (Marketmaker.display_data state.mmstate); state
+    | Command.History -> (Marketmaker.stringify_bidask_history state.mmstate); state
     | Command.Help -> Gui.display_help (); state
     | Command.Tutorial -> Gui.tutorial_preamble "start"; state
     | Command.Set phr -> 
       let bid = int_of_string (List.nth phr 0) in 
-      let ask = int_of_string (List.nth phr 1) in (* TODO  UPDATE STATE BELOW TO REFLECT NEW STATES *)
+      let ask = int_of_string (List.nth phr 1) in 
       let trade_transaction = Trader.make_transaction (Marketmaker.get_timestamp state.mmstate) bid ask "blank" in
       let trader_response = Trader.make_trade_dumb state.traders.simple_ai trade_transaction in 
       begin
@@ -66,8 +67,8 @@ let fsm fermi (state: big_state) =
             }
           } in 
           match response with
-          | "lift" -> print_endline "Trader has lifted your offer"; new_state
-          | "hit" -> print_endline "Trader has hit your bid"; new_state
+          | "lift" -> print_endline "Trader bought a CamlCoin (lifted your offer)"; new_state
+          | "hit" -> print_endline "Trader sold a CamlCoin (hit your bid)"; new_state
           | _ -> print_endline "error in trader's make trade"; exit 2
       end
     | _ -> print_endline "Done"; state
@@ -75,7 +76,7 @@ let fsm fermi (state: big_state) =
 
 let rec cli fermi big_state = 
   ANSITerminal.(print_string [blue]
-                  "\n\n ------------------- Statistics ------------------- \n");
+                  "------------------- Statistics ------------------- \n");
   print_string ("Timestamp ");
   print_string ( string_of_int (Marketmaker.get_timestamp big_state.mmstate + 1));
   print_string (" |  Prev. bid/ask:  ");
@@ -84,7 +85,7 @@ let rec cli fermi big_state =
   print_string (string_of_int (Marketmaker.get_outstandingshares big_state.mmstate));
   match (Marketmaker.get_timestamp big_state.mmstate) with
   | 10 -> print_endline ("GAME OVER ");
-    print_endline (" ADD STATISTICS AT END ");
+    (Marketmaker.display_data big_state.mmstate);
     exit 0
   | _ -> cli fermi (fsm fermi big_state )
 
@@ -108,10 +109,10 @@ let play_game f =
 
 let main () = 
   Gui.preamble ();
-  print_string  "> ";
-
-  match read_line () with
-  | exception End_of_file -> ()
-  | file_name -> play_game file_name
+  play_game "fermi.json"
+(* print_string  "> ";
+   match read_line () with
+   | exception End_of_file -> ()
+   | file_name -> play_game file_name *)
 
 let () = main ()

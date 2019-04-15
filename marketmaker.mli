@@ -10,3 +10,4 @@ val stringify_bid_ask : t -> string
 val get_outstandingshares : t -> int
 val increment_timestep : t -> t
 val display_data : t -> unit
+val stringify_bidask_history : t -> unit

@@ -73,13 +73,23 @@ let rec tutorial_fsm unit =
 
 
 let tutorial_preamble unit = 
-  ANSITerminal.print_string [ANSITerminal.black; ANSITerminal.magenta] "~ TUTORIAL INTRODUCTION ~";
+  ANSITerminal.print_string [ANSITerminal.black; ANSITerminal.magenta] "~ TUTORIAL INTRODUCTION ~\n";
   print_endline (" The goal of this game is to make a market for traders who want to buy and sell
   CamlCoin.  For now, suppose we tell you a priori that the true value of CamlCoin is $10.  ");
   print_endline ("Your goal is to continuously provide bid/ask spreads and hopefully make a profit on
    your spread.  ");
+  print_endline ("We use the notation 'set x y' to mean you, the marketmaker, will BUY at x and SELL at y");
+  print_endline ("--> this means traders will BUY at y and SELL at x");
+  print_endline ("Suppose your market is 'set 20 40'.  In this case, the sell price of $20 is
+    greater than the intrinsic value.  Sellers get a great deal!  They can sell something worth $10 for
+    $20.  Expect a lot of sells.  Adjust your interval downwards. ");
+  print_endline ("Suppose your market is 'set 5 8'.  In this case, the buy price $8 is much less than
+    the intrinsic value of $10.  Buys are getting a bargain!  Expect a lot of buys.  Adjust your interval upwards.");
+  print_endline ("Suppose your market is 'set 9 11'.  Your market is good!  With some variance,
+  buyers will buy at $11 which is very close to the actual price.  Sellers will sell at $9.  Expect roughly even
+  buyers and sellers.  You will make $11 - $9 = $2 per transaction.  ");
   print_endline ("Starting tutorial .. .  ");
-
+  print_endline ("Now you try.  We won't tell you the actual price.  ");
   tutorial_fsm ();
   ANSITerminal.print_string [ANSITerminal.black; ANSITerminal.magenta] "End of tutorial. "
 
@@ -88,8 +98,7 @@ let tutorial_preamble unit =
 let preamble unit = 
   ANSITerminal.print_string [ANSITerminal.black; ANSITerminal.white] "Welcome!";
   ANSITerminal.(print_string [black; white]
-                  "\n\n Welcome to the CamlCoin exchange! Here you will practice your maket making skills \n");
-  print_endline "Please enter the name of the file:  \n"; ()
+                  "\n\n Welcome to the CamlCoin exchange! Here you will practice your maket making skills \n"); ()
 
 let introduction unit = 
   ANSITerminal.print_string [ANSITerminal.black; ANSITerminal.white] ("Today, you are the sole market maker of a coin called CamelCoin. ");

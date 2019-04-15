@@ -42,6 +42,7 @@ let fsm fermi (state: big_state) =
     | Command.Quit -> print_endline "QUIT"; exit 0
     | Command.Inventory -> (Marketmaker.display_data state.mmstate); state
     | Command.Help -> Gui.display_help (); state
+    | Command.Tutorial -> Gui.tutorial_preamble "start"; state
     | Command.Set phr -> 
       let bid = int_of_string (List.nth phr 0) in 
       let ask = int_of_string (List.nth phr 1) in (* TODO  UPDATE STATE BELOW TO REFLECT NEW STATES *)

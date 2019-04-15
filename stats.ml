@@ -40,3 +40,4 @@ let last_three_lsr lst =
   let m = ((length *. xy) -. (x *.y))/.((length *. x2) -. (x *. x)) in
   let b = (y -. (m *.x))/.length in
   ((length +. 1.0) -. b) /. m
+

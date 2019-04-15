@@ -44,6 +44,9 @@ let fsm fermi (state: big_state) =
     | Command.History -> (Marketmaker.stringify_bidask_history state.mmstate); state
     | Command.Help -> Gui.display_help (); state
     | Command.Tutorial -> Gui.tutorial_preamble "start"; state
+    | Command.Cheat -> 
+      print_endline "TODO: Add functionality";
+      failwith "Unimplemented"
     | Command.Set phr -> 
       let bid = int_of_string (List.nth phr 0) in 
       let ask = int_of_string (List.nth phr 1) in 

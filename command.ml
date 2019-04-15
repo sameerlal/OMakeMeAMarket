@@ -5,12 +5,11 @@ type object_phrase = string list
 type command = 
   | Set of object_phrase   
   | Inventory  
-  | History  (*TODO  *) 
-  | First_Trade  (*TODO  *)
-  | Last_Trade    (*TODO  *)
-  | Help  (*TODO  *) 
+  | History 
+  | Help  
   | Quit  (*TODO  *)
-  | Tutorial (*TODO  *)
+  | Tutorial
+  | Cheat 
 
 exception Empty
 
@@ -32,11 +31,10 @@ let parse str =
         in (Set obj) else raise Malformed
     | "inventory" -> if List.length filtered = 1 then Inventory else raise Malformed
     | "history" -> if List.length filtered = 1 then History else raise Malformed
-    | "first Trade" -> if List.length filtered = 1 then First_Trade else raise Malformed
-    | "last_Trade" -> if List.length filtered = 1 then Last_Trade else raise Malformed
     | "quit" -> if List.length filtered = 1 then Quit else raise Malformed
     | "tutorial" -> Tutorial
     | "help" -> Help
+    | "cheat" -> Cheat
     | _ -> raise Malformed
   else 
     raise Empty

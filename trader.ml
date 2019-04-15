@@ -67,14 +67,16 @@ let make_trade trader transaction =
   let inv = trader.inventory in 
   let book = trader.orderbook.transactions in
   let avg_val = trader.avg_buy_value in
-  if trader.orderbook.buys = 0 then if buy_value < trader.true_value then
+  if trader.orderbook.buys = 0 then 
+    if buy_value < trader.true_value then
       let new_buys = trader.orderbook.buys + 1 in
       let new_sells = trader.orderbook.sells in 
       let new_cash = trader.cash - buy_value in
       let newtransaction = {
         transaction with order_type = "bid"
       } in
-      let t = {trader with avg_buy_value = (avg_val* (new_buys - 1) + buy_value) / new_buys; 
+      let t = {trader with avg_buy_value = 
+                             (avg_val* (new_buys - 1) + buy_value) / new_buys; 
                            profit = (get_curr_profit new_cash sell_value inv+1); 
                            inventory = inv - 1; 
                            orderbook = {transactions = newtransaction::book; 
@@ -115,7 +117,6 @@ let make_trade trader transaction =
    } 
 *)
 
-
 let make_trade_dumb (trader:t) (transaction:transaction) = 
   let time = Random.int 2 in 
   let seed = (time) mod 2 in 
@@ -132,12 +133,6 @@ let make_trade_dumb (trader:t) (transaction:transaction) =
   else if transaction.bidask.bid > trader.true_value - 10
   then Some (trader, "hit")
   else None
-
-
-
-
-
-
 
 (**[make_buy trader transaction] is a pair of new type t trader (or the old 
    trader depending on whether the trader will accept the marketmaker's offer 

@@ -63,7 +63,6 @@ let fsm fermi (state: big_state) =
             }
           } in 
           match response with
-          (*  TODO   UPDATE THE STATES BELOW IWTH THE NEW MMSTATE AND TRADER STATE *)
           | "lift" -> print_endline "Trader has lifted your offer"; new_state
           | "hit" -> print_endline "Trader has hit your bid"; new_state
           | _ -> print_endline "error in trader's make trade"; exit 2

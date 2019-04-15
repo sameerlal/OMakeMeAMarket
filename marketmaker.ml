@@ -137,3 +137,4 @@ let stringify_bid_ask (market : t) =
 
 let get_timestamp (market : t) = 
   market.timestamp
+

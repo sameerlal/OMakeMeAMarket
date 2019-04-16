@@ -116,6 +116,6 @@ let introduction unit =
   ANSITerminal.print_string [ANSITerminal.black; ANSITerminal.green] ("Type in 'help' for a list of commands or 'tutorial' to begin the tutorial \n" );
   ANSITerminal.print_string [ANSITerminal.black; ANSITerminal.green] ("We will assume familiarity, so let us begin!  \n");
   display_help ();
-  ANSITerminal.print_string [ANSITerminal.red] ("The true cost of a CamelCoin is equal to the answer of the following question:  \n");
+  ANSITerminal.print_string [ANSITerminal.red] ("The true cost of a CamelCoin is equal to the answer of the following question:  \n \n");
   ()
 

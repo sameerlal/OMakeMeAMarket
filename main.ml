@@ -116,7 +116,7 @@ let play_game f =
   print_endline "\n";
   Gui.introduction ();
   print_endline (Parse.get_question fermi);
-  print_endline ("Let us begin... make your market:  ");
+  print_endline ("\n \n Let us begin... make your market:  ");
   cli fermi (init_big_state (int_of_string true_value))
 
 let main () = 

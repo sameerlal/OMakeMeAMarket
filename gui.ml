@@ -94,18 +94,10 @@ let tutorial_preamble unit =
 (* Text to display  *)
 
 let preamble unit = 
+  ANSITerminal.erase Above;
   ANSITerminal.print_string [ANSITerminal.black; ANSITerminal.yellow] "Welcome! \n";
   ANSITerminal.(print_string [black; yellow]
                   "Welcome to the CamlCoin exchange! Here you will practice your maket making skills \n"); ()
-
-let introduction unit = 
-  ANSITerminal.print_string [ANSITerminal.black; ANSITerminal.white] ("Today, you are the sole market maker of a coin called CamelCoin. ");
-  ANSITerminal.print_string [ANSITerminal.black; ANSITerminal.white] ("You will be making a market for several traders in USD.  ");
-  ANSITerminal.print_string [ANSITerminal.black; ANSITerminal.white] ("You are competing with other high frequency trading firms such as Citadel, Jane Street and Optiver, so be fast! ");
-  ANSITerminal.print_string [ANSITerminal.black; ANSITerminal.white] ("Type in 'help' for a list of commands or 'tutorial' to begin the tutorial" );
-  ANSITerminal.print_string [ANSITerminal.black; ANSITerminal.white] ("We will assume familiarity, so let us begin!  ");
-  ANSITerminal.print_string [ANSITerminal.black; ANSITerminal.white] ("The true cost of a CamelCoin is equal to the answer of the following question:  "); ()
-
 let display_help unit =
   ANSITerminal.print_string [ANSITerminal.red; ANSITerminal.blue] ("The list of possible help items are: ");
   ANSITerminal.print_string [ANSITerminal.red; ANSITerminal.yellow] ("
@@ -118,3 +110,14 @@ let display_help unit =
       Tutorial \n
   ");
   ()
+
+let introduction unit = 
+  ANSITerminal.print_string [ANSITerminal.black; ANSITerminal.green] ("Today, you are the sole market maker of a coin called CamelCoin. \n");
+  ANSITerminal.print_string [ANSITerminal.black; ANSITerminal.green] ("You will be making a market for several traders in USD.  \n");
+  ANSITerminal.print_string [ANSITerminal.black; ANSITerminal.green] ("You are competing with other high frequency trading firms such as Citadel, Jane Street and Optiver, so be fast! \n");
+  ANSITerminal.print_string [ANSITerminal.black; ANSITerminal.green] ("Type in 'help' for a list of commands or 'tutorial' to begin the tutorial \n" );
+  ANSITerminal.print_string [ANSITerminal.black; ANSITerminal.green] ("We will assume familiarity, so let us begin!  \n");
+  display_help ();
+  ANSITerminal.print_string [ANSITerminal.red] ("The true cost of a CamelCoin is equal to the answer of the following question:  \n");
+  ()
+

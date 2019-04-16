@@ -75,12 +75,6 @@ let newton_raphson_secant f start =
     if (abs_float (update -. xk) < 0.01) then Some xk else iter xk (number + 1) in
   iter start 0
 
-
-
-
-
-
-
 let rec get_max lst acc =
   match lst with
   | [] -> acc

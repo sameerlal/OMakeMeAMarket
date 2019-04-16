@@ -75,6 +75,7 @@ let newton_raphson_secant f start =
     if (abs_float (update -. xk) < 0.01) then Some xk else iter xk (number + 1) in
   iter start 0
 
+(**[get_max lst acc] is the max value in the list [lst]. *)
 let rec get_max lst acc =
   match lst with
   | [] -> acc
@@ -85,17 +86,24 @@ let plot_data data =
   let ylen_est = get_max data.ask_data in 
   failwith "Unimplemented"
 
-
+(**[get_data true_val bidask_lst bids asks trades times] is a record 
+   containing the history of the market's bids, asks, trade types and the true value of 
+   the security. It takes in the bidask history of the market in [bidask_lst] 
+   and the [true_val] of the security. *)
 let rec get_data true_val bidask_lst bids asks trades times =
   match bidask_lst with
   | [] -> {bid_data = bids; ask_data = asks; trade_data = trades; time_data = times; true_value = true_val}
   | h::t -> get_data true_val t (h.bid::bids) (h.ask::asks) (h.trade_type::trades) times
 
-let rec list_of_ints i n lst = 
-  let x = i+1 in 
-  if i <= n then list_of_ints x n (i::lst)
-  else lst
+(**[list_of_ints strt nd] is a list of ints in ascending order from [strt] to 
+   [nd]. *)
+let rec list_of_ints strt nd lst =  
+  if strt <= nd then list_of_ints (strt+1) nd (strt::lst)
+  else List.rev lst
 
+(**[get_graph market trader] is a record of the bids and asks put by the player, 
+   the types of trades made and the true value of the security. It takes in 
+   a [market] type t and a [trader] type t*)
 let get_graph (market : Marketmaker.t) (trader : Trader.t) =
   let true_val = trader.true_value in
   let bidask_lst = market.bid_ask_history in

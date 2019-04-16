@@ -7,17 +7,12 @@ open Marketmaker
   *    - Gaussian Statistics
   *    - Three point Linear Square Regression Model 
   *    - Newton-Raphson Method for Curve approximation (Secant estimate)
-<<<<<<< HEAD
-  *   
-  *    In implementaiton I, the cheat command currently compares previous bid/asks
-  *     and uses a linear regression model to suggest the next move.
-=======
-  *    - mean spread, bids, asks, number of each type of trade made (using trade_freq).
-  *    - max spread, bids, asks (using get_max)
+  *             DATA ANALYSIS
+  *    - Mean spread, bids, asks, trade count
+  *    - Max spread, bids, asks 
   *
-  *
-  *
->>>>>>> 797c379c1074baf8c2a02ff3cb6ac661fccfa08e
+  *     In implementaiton 1, the cheat command currently compares previous bid/asks
+  *     and uses a linear regression model to suggest the next move, referencing the actual value.
   *)
 type graph_data = {bid_data : int list; ask_data : int list; trade_data : string list; time_data : int list; true_value : int}
 

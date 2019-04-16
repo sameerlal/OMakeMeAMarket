@@ -4,12 +4,8 @@ open String
 let rec to_float_list_acc acc = function
   |[] -> acc
   |h::t -> to_float_list_acc ((float_of_string h):: acc) t 
-<<<<<<< HEAD
 
 (**[to_float_list lst] is a list of floats converted from the string list [lst] *)
-=======
-(* Typecast string list to int list *)
->>>>>>> cf80da4c1ae9182a3aa6bd7a24198ec34b30fceb
 let to_float_list lst =
   to_float_list_acc [] lst |> List.rev
 
@@ -30,11 +26,8 @@ let get_variance lst =
   (* sum of the squared values divided by length subtracted by mean squared *)
   let mean = get_mean lst in
   (sum_squared lst)/. float (List.length lst) -. (mean *. mean)
-<<<<<<< HEAD
 
 (**[last_three_val] is a list of the last three values in the lst. *)
-=======
->>>>>>> cf80da4c1ae9182a3aa6bd7a24198ec34b30fceb
 let rec last_three_val = function
   |[] -> failwith "empty list"
   |x::y::z::[] -> [float x; float y; float z]
@@ -55,10 +48,7 @@ let last_three_lsr lst =
   let m = ((length *. xy) -. (x *.y))/.((length *. x2) -. (x *. x)) in
   let b = (y -. (m *.x))/.length in
   ((length +. 1.0) -. b) /. m
-<<<<<<< HEAD
 
 
 
-=======
->>>>>>> cf80da4c1ae9182a3aa6bd7a24198ec34b30fceb
 

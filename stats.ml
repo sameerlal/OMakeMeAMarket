@@ -1,4 +1,8 @@
 open String
+open Trader
+open Marketmaker
+
+type graph_data = {bid_data : int list; ask_data : int list; trade_data : int list; time_data : int list; true_value : int}
 
 (**[to_float_list_acc acc] is a list of floats from a string list. *)
 let rec to_float_list_acc acc = function
@@ -49,6 +53,21 @@ let last_three_lsr lst =
   let b = (y -. (m *.x))/.length in
   ((length +. 1.0) -. b) /. m
 
+let plot_data data =
+  failwith "unimplemented"
 
+let rec get_data true_val bidask_lst bids asks trades times =
+  match bidask_lst with
+  | [] -> {bid_data = bids; ask_data = asks; trade_data = trades; time_data = times; true_value = true_val}
+  | h::t -> get_data true_val t (h.bid::bids) (h.ask::asks) (h.trade_type::trades) times
+
+let get_graph (market:Marketmaker.t) (trader:Trader.t) =
+  let true_val = trader.true_value in
+  let bidask_lst = market.bid_ask_history in
+  let times = market.timestamp in 
+  let bid_lst = [] in 
+  let ask_lst = [] in 
+  let trade = [] in 
+  get_data true_val bidask_lst bid_lst ask_lst trade times
 
 

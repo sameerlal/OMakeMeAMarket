@@ -11,9 +11,6 @@ type trade_feedback = Low | High | BigSpread | Okay
 (* If interval is bad, then None.  If interval is good but spread too large then
    Some false .  Otherwise Some true. *)
 let check_good_interval (bid:int) (ask:int) =
-  print_endline (string_of_int tutorial_value);
-  print_endline (string_of_int bid);
-  print_endline (string_of_int ask);
   if (bid <= tutorial_value ) 
   && (ask >= tutorial_value ) 
   && ((ask - bid) < 5) then

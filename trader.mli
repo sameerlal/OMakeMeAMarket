@@ -1,7 +1,34 @@
-type t
-type orderbook
-type transaction
-type bidask
+(* type t
+   type orderbook
+   type transaction
+   type bidask *)
+
+type bidask = {
+  bid: int;
+  ask: int;
+  spread: int;
+}
+
+type transaction = {
+  timestamp : int;
+  bidask: bidask;
+  order_type : string; (* bid or ask *)
+}
+
+type orderbook = {
+  transactions : transaction list;
+  buys: int;
+  sells: int
+}
+
+type t = {
+  true_value : int;
+  avg_buy_value : int;
+  profit : int;
+  cash : int;
+  inventory : int; (* Total number of shares owned *)
+  orderbook : orderbook;
+}
 
 
 val init_trader :  int -> t

@@ -65,18 +65,18 @@ let plot_data data =
   failwith "Unimplemented"
 
 
-let rec get_data true_val bidask_lst bids asks trades times =
-  match bidask_lst with
-  | [] -> {bid_data = bids; ask_data = asks; trade_data = trades; time_data = times; true_value = true_val}
-  | h::t -> get_data true_val t (h.bid::bids) (h.ask::asks) (h.trade_type::trades) times
+(* let rec get_data true_val bidask_lst bids asks trades times =
+   match bidask_lst with
+   | [] -> {bid_data = bids; ask_data = asks; trade_data = trades; time_data = times; true_value = true_val}
+   | h::t -> get_data true_val t (h.bid::bids) (h.ask::asks) (h.trade_type::trades) times
 
-let get_graph (market:Marketmaker.t) (trader:Trader.t) =
-  let true_val = trader.true_value in
-  let bidask_lst = market.bid_ask_history in
-  let times = market.timestamp in 
-  let bid_lst = [] in 
-  let ask_lst = [] in 
-  let trade = [] in 
-  get_data true_val bidask_lst bid_lst ask_lst trade times
+   let get_graph (market:Marketmaker.t) (trader:Trader.t) =
+   let true_val = trader.true_value in
+   let bidask_lst = market.bid_ask_history in
+   let times = market.timestamp in 
+   let bid_lst = [] in 
+   let ask_lst = [] in 
+   let trade = [] in 
+   get_data true_val bidask_lst bid_lst ask_lst trade times *)
 
 

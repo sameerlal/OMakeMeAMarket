@@ -7,9 +7,17 @@ open Marketmaker
   *    - Gaussian Statistics
   *    - Three point Linear Square Regression Model 
   *    - Newton-Raphson Method for Curve approximation (Secant estimate)
+<<<<<<< HEAD
   *   
   *    In implementaiton I, the cheat command currently compares previous bid/asks
   *     and uses a linear regression model to suggest the next move.
+=======
+  *    - mean spread, bids, asks, number of each type of trade made (using trade_freq).
+  *    - max spread, bids, asks (using get_max)
+  *
+  *
+  *
+>>>>>>> 797c379c1074baf8c2a02ff3cb6ac661fccfa08e
   *)
 type graph_data = {bid_data : int list; ask_data : int list; trade_data : string list; time_data : int list; true_value : int}
 
@@ -113,6 +121,7 @@ let get_graph (market : Marketmaker.t) (trader : Trader.t) =
   let trade = [] in 
   get_data true_val bidask_lst bid_lst ask_lst trade times
 
+
 let rec bid_acc (lst : Marketmaker.bidask list) acc =
   match lst with
   | [] -> List.rev acc
@@ -146,4 +155,22 @@ let linear_reg_cheat (market : Marketmaker.t ) =
                                  (List.length ask_list - 3))::(List.nth bid_list 
                                                                  (List.length ask_list - 2))::(List.nth bid_list 
                                                                                                  (List.length ask_list - 1))::[])  )
+
+(**[count lst str acc] is the frequency of occurrence of [str] in [lst]. *)
+let rec count lst str acc =
+  match lst with
+  | [] -> acc
+  | h::t -> if h = str then count t str acc+1
+    else count t str acc
+
+(**[trade_freq market trader] is the frequency of each trade type in the market. 
+   It prints the output to the screen. *)
+let trade_freq market trader =
+  let info = get_graph market trader in 
+  let trades = info.trade_data in
+  let hits = count trades "hit" 0 in 
+  let lifts = count trades "lift" 0 in
+  let prnt = ["hits = "^(string_of_int hits); "lifts = "^(string_of_int lifts)] in 
+  List.iter print_string prnt
+
 

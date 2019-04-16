@@ -2,8 +2,16 @@ open Pervasives
 open String
 open Trader
 open Marketmaker
-
-type graph_data = {bid_data : int list; ask_data : int list; trade_data : int list; time_data : int list; true_value : int}
+(* 
+  *           STATISTICS ENGINE 
+  *    - Gaussian Statistics
+  *    - Three point Linear Square Regression Model 
+  *    - Newton-Raphson Method for Curve approximation (Secant estimate)
+  *
+  *
+  *
+  *)
+type graph_data = {bid_data : int list; ask_data : int list; trade_data : string list; time_data : int list; true_value : int}
 
 (**[to_float_list_acc acc] is a list of floats from a string list. *)
 let rec to_float_list_acc acc = function
@@ -54,6 +62,19 @@ let last_three_lsr lst =
   let b = (y -. (m *.x))/.length in
   ((length +. 1.0) -. b) /. m
 
+
+(** [newton_raphson_secant f start] approximates the root of a function [f] starting at seed value [start].
+    Returns None if not converged or Some x where x is the converged value.  This approximates the derivative
+    of the function as a secant line rather than the traditional tangent method *)
+let newton_raphson_secant f start = 
+  let dfdx fu =
+    fun x -> (fu (x +. 0.1) -. fu x) /. 0.1 in
+  let rec iter xk number =
+    let update = start -. (f xk /. (dfdx f) xk) in 
+    if number > 100 then None else 
+    if (abs_float (update -. xk) < 0.01) then Some xk else iter xk (number + 1) in
+  iter start 0
+
 let rec get_max lst acc =
   match lst with
   | [] -> acc
@@ -70,10 +91,15 @@ let rec get_data true_val bidask_lst bids asks trades times =
   | [] -> {bid_data = bids; ask_data = asks; trade_data = trades; time_data = times; true_value = true_val}
   | h::t -> get_data true_val t (h.bid::bids) (h.ask::asks) (h.trade_type::trades) times
 
+let rec list_of_ints i n lst = 
+  let x = i+1 in 
+  if i <= n then list_of_ints x n (i::lst)
+  else lst
+
 let get_graph (market : Marketmaker.t) (trader : Trader.t) =
   let true_val = trader.true_value in
   let bidask_lst = market.bid_ask_history in
-  let times = market.timestamp in 
+  let times = list_of_ints 0 (List.length bidask_lst) [] in 
   let bid_lst = [] in 
   let ask_lst = [] in 
   let trade = [] in 

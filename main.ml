@@ -90,7 +90,7 @@ let rec cli fermi big_state =
   | 10 -> print_endline ("GAME OVER ");
     (Marketmaker.display_data big_state.mmstate);
     exit 0
-  | _ -> cli fermi (fsm fermi big_state )
+  | _ ->  cli fermi (fsm fermi big_state )
 
 
 

@@ -1,4 +1,4 @@
-type graph_data = {bid_data : int list; ask_data : int list; trade_data : int list; time_data : int list; true_value : int}
+type graph_data = {bid_data : int list; ask_data : int list; trade_data : string list; time_data : int list; true_value : int}
 
 
 val to_float_list : string list -> float list

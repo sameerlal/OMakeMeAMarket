@@ -1,7 +1,39 @@
 
 (** The abstract type of values representing adventures. *)
-type t
-type receive_transaction
+type bidask = {
+  trade_type : string;
+  bid: int;
+  ask: int;
+  spread: int;
+}
+
+(* keeps track of market maker's holdings *)
+type orderbook = {
+  outstanding_shares: int;
+}
+
+(* Holds market maker type *)
+type t = {
+  currbidask: bidask;
+  bid_ask_history: bidask list;
+  timestamp: int;
+  curr_profit: int;
+  orderbook: orderbook
+}
+
+(* Trade variant.  To be sent to engine *)
+
+type send_market = {
+  timestamp : int;
+  transaction: bidask;
+}
+
+type receive_transaction =  {
+  timestamp : int;
+  trade_type : string; (* hit the bid or lifted offer *)
+  transaction : bidask;
+}
+
 val init_market : string -> t
 val get_timestamp : t -> int
 val transaction : receive_transaction -> t -> t

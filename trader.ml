@@ -35,7 +35,6 @@ let change_true_value (trader:t) (adj_percentage:int) (down_or_up:bool) =
 
 (**[init_trader unit] is an initial trader of type t. *)
 let init_trader true_value =
-  print_endline (string_of_int true_value);
   {true_value = true_value; avg_buy_value = 0; profit = 0; cash = 1000000; inventory = 0; 
    orderbook = {transactions = []; buys = 0; sells = 0}}
 

@@ -84,7 +84,7 @@ let rec cli fermi big_state =
   print_string ( string_of_int (Marketmaker.get_timestamp big_state.mmstate + 1));
   print_string (" |  Prev. bid/ask:  ");
   print_string (Marketmaker.stringify_bid_ask big_state.mmstate);
-  print_string (" |  Outstanding Shares: " );
+  print_string (" |  CamlCoins Accumulated: " );
   print_string (string_of_int (Marketmaker.get_outstandingshares big_state.mmstate));
   match (Marketmaker.get_timestamp big_state.mmstate) with
   | 10 -> print_endline ("GAME OVER ");

@@ -99,5 +99,3 @@ let plot_data data =
    let ask_lst = [] in 
    let trade = [] in 
    get_data true_val bidask_lst bid_lst ask_lst trade times *)
-
-

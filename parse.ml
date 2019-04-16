@@ -16,7 +16,8 @@ type fermiquestions =
 type t = {
   id: string;
   fermi : fermiquestions list;
-  situations : situation list
+  situations : situation list;
+  ascii : string
 }
 
 
@@ -37,9 +38,16 @@ let from_json json =
     id = json |> member "id" |> to_string;
     fermi = json |> member "fermi" |> to_list |> List.map fermisofjson;
     situations = json |> member "situation" |> to_list |> List.map situationsofjson;
+    ascii = json |> member "ascii" |> to_string;
   }
 
 (* Obtain a question from json *)
+
+let get_intro (data: t) = 
+  print_endline (data.ascii)
+
+
+
 let get_question_struct (data : t) = 
   List.nth data.fermi (int_of_string data.id)
 

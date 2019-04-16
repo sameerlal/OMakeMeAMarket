@@ -102,10 +102,13 @@ let init_big_state true_value =
 
 
 let play_game f =
-  Gui.introduction ();
   let obtained_json = Yojson.Basic.from_file f in
   let fermi = Parse.from_json obtained_json in
-  let true_value = Parse.get_answer fermi in 
+  let true_value = Parse.get_answer fermi in   
+  ANSITerminal.erase Above;
+  Parse.get_intro fermi;
+  print_endline "\n";
+  Gui.introduction ();
   print_endline (Parse.get_question fermi);
   print_endline ("Let us begin... make your market:  ");
   cli fermi (init_big_state (int_of_string true_value))

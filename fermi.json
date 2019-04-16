@@ -19,5 +19,12 @@
       "event": "Interest rates decrease",
       "effect": "+2%"
     }
-  ]
+  ],
+  "ascii": "
+WW      WW EEEEEEE LL       CCCCC   OOOOO  MM    MM EEEEEEE          TTTTTTT RRRRRR    AAA   DDDDD   EEEEEEE RRRRRR     !!! 
+WW      WW EE      LL      CC    C OO   OO MMM  MMM EE                 TTT   RR   RR  AAAAA  DD  DD  EE      RR   RR    !!! 
+WW   W  WW EEEEE   LL      CC      OO   OO MM MM MM EEEEE              TTT   RRRRRR  AA   AA DD   DD EEEEE   RRRRRR     !!! 
+ WW WWW WW EE      LL      CC    C OO   OO MM    MM EE                 TTT   RR  RR  AAAAAAA DD   DD EE      RR  RR         
+  WW   WW  EEEEEEE LLLLLLL  CCCCC   OOOO0  MM    MM EEEEEEE            TTT   RR   RR AA   AA DDDDDD  EEEEEEE RR   RR    !!!
+      " 
 }

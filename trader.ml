@@ -115,8 +115,6 @@ let make_trade trader transaction =
 let make_trade_dumb (trader:t) (transaction:transaction) = 
   let time = Random.int 2 in 
   let seed = (time) mod 2 in 
-  print_endline (string_of_int time);
-  print_endline (string_of_int seed);
   if (abs (transaction.bidask.ask - trader.true_value) < 10) &&
      (abs (transaction.bidask.bid - trader.true_value) < 10 ) then
     match seed with
@@ -133,5 +131,3 @@ let make_trade_dumb (trader:t) (transaction:transaction) =
    of the game. *)
 let get_final_profit trader =
   trader.profit + (trader.inventory * trader.true_value)
-
-

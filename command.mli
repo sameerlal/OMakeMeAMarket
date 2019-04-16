@@ -1,6 +1,14 @@
 type object_phrase = string list
+
 type command = 
-  | Profit | Set of object_phrase  | Inventory | Orderbook | First_Trade | Last_Trade | Help| Quit
+  | Set of object_phrase   
+  | Inventory  
+  | History 
+  | Help  
+  | Quit  (*TODO  *)
+  | Tutorial
+  | Cheat
+
 exception Empty
 exception Malformed
 

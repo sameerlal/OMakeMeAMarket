@@ -17,6 +17,7 @@ type orderbook = {
 (* Holds market maker type *)
 type t = {
   currbidask: bidask;
+  bid_ask_history: bidask list;
   timestamp: int;
   curr_profit: int;
   orderbook: orderbook
@@ -58,6 +59,7 @@ let init_market game : t =
       ask = 0;
       spread = 0;
     };
+    bid_ask_history = [];
     timestamp = 0;
     curr_profit = 0;
     orderbook = {
@@ -97,13 +99,16 @@ let readjust_spread (transaction:receive_transaction) (market:t) : t =
    We update the timestamp here.
 *)
 let transaction (transaction:receive_transaction) (market:t) =
-  {
-    currbidask = {
+  let new_curr_bid_ask = 
+    {
       trade_type = transaction.trade_type;
       bid = transaction.transaction.bid;
       ask = transaction.transaction.ask;
       spread = transaction.transaction.spread;
-    };
+    } in 
+  {
+    currbidask = new_curr_bid_ask;
+    bid_ask_history = market.bid_ask_history @ [new_curr_bid_ask];
     timestamp = transaction.timestamp + 1;
     curr_profit = market.curr_profit + (if transaction.trade_type = "lift" 
                                         then transaction.transaction.ask else -1*transaction.transaction.bid); (* TODO *)
@@ -131,6 +136,18 @@ let get_outstandingshares market =
 
 let get_orderbook (market : t) =
   market.orderbook
+
+let stringify_bidask_history (market : t) =
+  ANSITerminal.print_string [ANSITerminal.blue; ANSITerminal.cyan] " ----------------- HISTORY ------------------ \n";
+  let rec ba_helper (ls : bidask list) = 
+    match ls with
+    | [] -> ()
+    | h::t -> 
+      ANSITerminal.print_string [ANSITerminal.blue; ANSITerminal.yellow] 
+        (h.trade_type ^ " " ^ (string_of_int h.bid) ^ "@" ^ (string_of_int h.ask) ^ " with spread " ^ (string_of_int h.spread) ^ "\n"); 
+      ba_helper t
+
+  in ba_helper (market.bid_ask_history)
 
 let stringify_bid_ask (market : t) =
   (string_of_int market.currbidask.bid) ^ "@" ^ (string_of_int market.currbidask.ask)

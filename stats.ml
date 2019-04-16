@@ -7,6 +7,8 @@ open Marketmaker
   *    - Gaussian Statistics
   *    - Three point Linear Square Regression Model 
   *    - Newton-Raphson Method for Curve approximation (Secant estimate)
+  *    - mean spread, bids, asks, number of each type of trade made (using trade_freq).
+  *    - max spread, bids, asks (using get_max)
   *
   *
   *
@@ -112,5 +114,24 @@ let get_graph (market : Marketmaker.t) (trader : Trader.t) =
   let ask_lst = [] in 
   let trade = [] in 
   get_data true_val bidask_lst bid_lst ask_lst trade times
+
+(**[count lst str acc] is the frequency of occurrence of [str] in [lst]. *)
+let rec count lst str acc =
+  match lst with
+  | [] -> acc
+  | h::t -> if h = str then count t str acc+1
+    else count t str acc
+
+(**[trade_freq market trader] is the frequency of each trade type in the market. 
+   It prints the output to the screen. *)
+let trade_freq market trader =
+  let info = get_graph market trader in 
+  let trades = info.trade_data in
+  let hits = count trades "hit" 0 in 
+  let lifts = count trades "lift" 0 in
+  let prnt = ["hits = "^(string_of_int hits); "lifts = "^(string_of_int lifts)] in 
+  List.iter print_string prnt
+
+
 
 

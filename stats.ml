@@ -2,7 +2,15 @@ open Pervasives
 open String
 open Trader
 open Marketmaker
-
+(* 
+  *           STATISTICS ENGINE 
+  *    - Gaussian Statistics
+  *    - Three point Linear Square Regression Model 
+  *    - Newton-Raphson Method for Curve approximation (Secant estimate)
+  *
+  *
+  *
+  *)
 type graph_data = {bid_data : int list; ask_data : int list; trade_data : int list; time_data : int list; true_value : int}
 
 (**[to_float_list_acc acc] is a list of floats from a string list. *)
@@ -53,6 +61,25 @@ let last_three_lsr lst =
   let m = ((length *. xy) -. (x *.y))/.((length *. x2) -. (x *. x)) in
   let b = (y -. (m *.x))/.length in
   ((length +. 1.0) -. b) /. m
+
+
+(** [newton_raphson_secant f start] approximates the root of a function [f] starting at seed value [start].
+    Returns None if not converged or Some x where x is the converged value.  This approximates the derivative
+    of the function as a secant line rather than the traditional tangent method *)
+let newton_raphson_secant f start = 
+  let dfdx fu =
+    fun x -> (fu (x +. 0.1) -. fu x) /. 0.1 in
+  let rec iter xk number =
+    let update = start -. (f xk /. (dfdx f) xk) in 
+    if number > 100 then None else 
+    if (abs_float (update -. xk) < 0.01) then Some xk else iter xk (number + 1) in
+  iter start 0
+
+
+
+
+
+
 
 let rec get_max lst acc =
   match lst with

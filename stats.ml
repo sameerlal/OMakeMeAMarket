@@ -62,12 +62,13 @@ let rec get_max lst acc =
 let plot_data data =
   let xlength = List.length data.time_data in
   let ylength = get_max data.ask_data in 
+  failwith "Unimplemented"
 
 
-  let rec get_data true_val bidask_lst bids asks trades times =
-    match bidask_lst with
-    | [] -> {bid_data = bids; ask_data = asks; trade_data = trades; time_data = times; true_value = true_val}
-    | h::t -> get_data true_val t (h.bid::bids) (h.ask::asks) (h.trade_type::trades) times
+let rec get_data true_val bidask_lst bids asks trades times =
+  match bidask_lst with
+  | [] -> {bid_data = bids; ask_data = asks; trade_data = trades; time_data = times; true_value = true_val}
+  | h::t -> get_data true_val t (h.bid::bids) (h.ask::asks) (h.trade_type::trades) times
 
 let get_graph (market:Marketmaker.t) (trader:Trader.t) =
   let true_val = trader.true_value in

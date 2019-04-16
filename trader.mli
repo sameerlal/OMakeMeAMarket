@@ -1,8 +1,3 @@
-(* type t
-   type orderbook
-   type transaction
-   type bidask *)
-
 type bidask = {
   bid: int;
   ask: int;

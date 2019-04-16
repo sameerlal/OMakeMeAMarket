@@ -143,18 +143,18 @@ let linear_reg_cheat (market : Marketmaker.t ) =
     (* Linear regression for asks *)
     if List.length ask_list < 3 then
       -1.0  else 
-      125.0 -. (last_three_lsr ((List.nth ask_list 
-                                   (List.length ask_list - 3))::(List.nth ask_list 
-                                                                   (List.length ask_list - 2))::(List.nth ask_list 
-                                                                                                   (List.length ask_list - 1))::[])  )
+      abs_float (125.0 -. (last_three_lsr ((List.nth ask_list 
+                                              (List.length ask_list - 3))::(List.nth ask_list 
+                                                                              (List.length ask_list - 2))::(List.nth ask_list 
+                                                                                                              (List.length ask_list - 1))::[])  ))
   else 
     (*  Linear regression for bids*)
   if List.length bid_list < 3 then
     -1.0  else 
-    125.0 -. (last_three_lsr ((List.nth bid_list 
-                                 (List.length ask_list - 3))::(List.nth bid_list 
-                                                                 (List.length ask_list - 2))::(List.nth bid_list 
-                                                                                                 (List.length ask_list - 1))::[])  )
+    abs_float (125.0 -. (last_three_lsr ((List.nth bid_list 
+                                            (List.length ask_list - 3))::(List.nth bid_list 
+                                                                            (List.length ask_list - 2))::(List.nth bid_list 
+                                                                                                            (List.length ask_list - 1))::[])  ))
 
 (**[count lst str acc] is the frequency of occurrence of [str] in [lst]. *)
 let rec count lst str acc =

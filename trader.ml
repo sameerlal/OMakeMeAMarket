@@ -28,11 +28,12 @@ type t = {
   orderbook : orderbook;
 }
 
+(**ADD DOCS *)
 let change_true_value (trader:t) (adj_percentage:int) (down_or_up:bool) =
   failwith "Unimplemented"
 
 
-(**[init_trader unit] is a trader of type t. *)
+(**[init_trader unit] is an initial trader of type t. *)
 let init_trader true_value =
   print_endline (string_of_int true_value);
   {true_value = true_value; avg_buy_value = 0; profit = 0; cash = 1000000; inventory = 0; 
@@ -43,14 +44,14 @@ let init_trader true_value =
 let get_curr_profit cash ?(init_cash = 1000000) msell_price inventory =
   inventory * msell_price + cash - init_cash
 
-
+(**[make_bidask bid ask] is a type bidask that takes in a bid and ask value. *)
 let make_bidask bid ask =
   {
     bid = bid;
     ask = ask;
     spread = ask - bid;
   }
-
+(**[make_transaction timestamp bid ask order_type] is a type transaction that takes in a [timestamp], [order_type] and a [bid] and [ask]. *)
 let make_transaction timestamp bid ask order_type =
   {
     timestamp = timestamp;
@@ -58,9 +59,9 @@ let make_transaction timestamp bid ask order_type =
     order_type = order_type;
   }
 
-(**[make_sell trader transaction] is a pair of new type t trader (or the old 
+(**[make_sell trader transaction] is an option either of Some new type t trader (or the old 
    trader depending on whether the trader will accept the marketmaker's bid 
-   for the security) and bool indicating whether trade was accepted. *)
+   for the security) or None which indicates whether trade was accepted. *)
 let make_trade trader transaction =
   let sell_value = transaction.bidask.bid in
   let buy_value = transaction.bidask.ask in
@@ -110,13 +111,7 @@ let make_trade trader transaction =
     Some (t, "hit")
   else None
 
-(* type transaction = {
-   timestamp : int;
-   bidask: bidask;
-   order_type : string; (* bid or ask *)
-   } 
-*)
-
+(**ADD DOC *)
 let make_trade_dumb (trader:t) (transaction:transaction) = 
   let time = Random.int 2 in 
   let seed = (time) mod 2 in 
@@ -133,10 +128,6 @@ let make_trade_dumb (trader:t) (transaction:transaction) =
   else if transaction.bidask.bid > trader.true_value - 10
   then Some (trader, "hit")
   else None
-
-(**[make_buy trader transaction] is a pair of new type t trader (or the old 
-   trader depending on whether the trader will accept the marketmaker's offer 
-   for the security) and bool indicating whether trade was accepted. *)
 
 (**[get_final_profit trader] is the profit of the trader type t at the end 
    of the game. *)

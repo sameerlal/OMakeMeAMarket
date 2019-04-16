@@ -7,9 +7,9 @@ open Marketmaker
   *    - Gaussian Statistics
   *    - Three point Linear Square Regression Model 
   *    - Newton-Raphson Method for Curve approximation (Secant estimate)
-  *
-  *
-  *
+  *   
+  *    In implementaiton I, the cheat command currently compares previous bid/asks
+  *     and uses a linear regression model to suggest the next move.
   *)
 type graph_data = {bid_data : int list; ask_data : int list; trade_data : string list; time_data : int list; true_value : int}
 
@@ -113,4 +113,37 @@ let get_graph (market : Marketmaker.t) (trader : Trader.t) =
   let trade = [] in 
   get_data true_val bidask_lst bid_lst ask_lst trade times
 
+let rec bid_acc (lst : Marketmaker.bidask list) acc =
+  match lst with
+  | [] -> List.rev acc
+  | h::t -> bid_acc t (h.bid::acc)
+
+let rec ask_acc (lst : Marketmaker.bidask list) acc =
+  match lst with
+  | [] -> List.rev acc
+  | h::t -> ask_acc t (h.ask::acc)
+
+let text_capture (market : Marketmaker.t) =
+  print_endline "Trace";
+  ()
+
+let linear_reg_cheat (market : Marketmaker.t ) = 
+  let bid_list = (bid_acc (market.bid_ask_history) []) in
+  let ask_list = (ask_acc (market.bid_ask_history) []) in
+  if List.length bid_list > List.length ask_list  then
+    (* Linear regression for asks *)
+    if List.length ask_list < 3 then
+      -1.0  else 
+      125.0 -. (last_three_lsr ((List.nth ask_list 
+                                   (List.length ask_list - 3))::(List.nth ask_list 
+                                                                   (List.length ask_list - 2))::(List.nth ask_list 
+                                                                                                   (List.length ask_list - 1))::[])  )
+  else 
+    (*  Linear regression for bids*)
+  if List.length bid_list < 3 then
+    -1.0  else 
+    125.0 -. (last_three_lsr ((List.nth bid_list 
+                                 (List.length ask_list - 3))::(List.nth bid_list 
+                                                                 (List.length ask_list - 2))::(List.nth bid_list 
+                                                                                                 (List.length ask_list - 1))::[])  )
 

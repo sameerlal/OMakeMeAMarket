@@ -45,8 +45,14 @@ let fsm fermi (state: big_state) =
     | Command.Help -> Gui.display_help (); state
     | Command.Tutorial -> Gui.tutorial_preamble "start"; state
     | Command.Cheat -> 
-      print_endline "TODO: Add functionality";
-      failwith "Unimplemented"
+      print_endline( (
+          if Stats.linear_reg_cheat state.mmstate
+             = infinity || Stats.linear_reg_cheat state.mmstate = -1.0
+          then "No cheat available! "
+          else 
+            string_of_float (Stats.linear_reg_cheat state.mmstate)
+        ));
+      state
     | Command.Set phr -> 
       let bid = int_of_string (List.nth phr 0) in 
       let ask = int_of_string (List.nth phr 1) in 

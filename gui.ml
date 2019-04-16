@@ -99,15 +99,13 @@ let preamble unit =
   ANSITerminal.(print_string [black; yellow]
                   "Welcome to the CamlCoin exchange! Here you will practice your maket making skills \n"); ()
 let display_help unit =
-  ANSITerminal.print_string [ANSITerminal.red; ANSITerminal.blue] ("The list of possible help items are: ");
+  ANSITerminal.print_string [ANSITerminal.red; ANSITerminal.blue] ("The list of possible commands are: ");
   ANSITerminal.print_string [ANSITerminal.red; ANSITerminal.yellow] ("
-      Inventory  \n
-      Orderbook \n
-      Profit \n
-      Get (bid) (ask) \n
-      Help \n
-      Statistics \n
-      Tutorial \n
+      get [bid] [ask] \n
+      inventory  \n
+      help \n
+      cheat \n
+      tutorial \n
   ");
   ()
 

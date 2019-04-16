@@ -6,3 +6,5 @@ val get_mean : float list -> float
 val get_variance : float list -> float
 val last_three_lsr : int list -> float
 val get_graph : Marketmaker.t -> Trader.t -> graph_data 
+val text_capture : Marketmaker.t -> unit
+val linear_reg_cheat : Marketmaker.t -> float

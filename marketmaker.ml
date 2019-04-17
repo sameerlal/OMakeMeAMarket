@@ -36,7 +36,7 @@ type receive_transaction =  {
   transaction : bidask;
 }
 
-
+(**[generate_receive_transaction timestamp trade_type bid ask] is a type transaction with the given arguments. *)
 let generate_receive_transaction timestamp trade_type bid ask =
   {
     timestamp = timestamp;
@@ -69,6 +69,8 @@ let init_market game : t =
 
 type result = Legal of t | Illegal
 
+(**[display_data state] is a unit with side-effects of displaying data about 
+   transactions and the currents status of the player and market. *)
 let display_data (state : t) = 
   ANSITerminal.(print_string [red]
                   "\n\n ------------------- Market Maker Statistics ------------------- \n");
@@ -118,6 +120,7 @@ let transaction (transaction:receive_transaction) (market:t) =
     }
   }
 
+(**[increment_timestep market] is a type t [market] with the timestamp incremented. *)
 let increment_timestep (market : t) =
   {market with 
    timestamp = market.timestamp + 1
@@ -149,6 +152,7 @@ let stringify_bidask_history (market : t) =
 
   in ba_helper (market.bid_ask_history)
 
+(**[stringify_bid_ask market] is a string of the current bid and ask. *)
 let stringify_bid_ask (market : t) =
   (string_of_int market.currbidask.bid) ^ "@" ^ (string_of_int market.currbidask.ask)
 

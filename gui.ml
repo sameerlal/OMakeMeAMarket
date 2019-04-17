@@ -8,7 +8,7 @@ let tutorial_value = 100
 
 type trade_feedback = Low | High | BigSpread | Okay
 
-(* If interval is bad, then None.  If interval is good but spread too large then
+(* [check_good_interval bid ask] is an option of either None or Some bool option. If interval is bad, then None.  If interval is good but spread too large then
    Some false .  Otherwise Some true. *)
 let check_good_interval (bid:int) (ask:int) =
   if (bid <= tutorial_value ) 
@@ -20,7 +20,7 @@ let check_good_interval (bid:int) (ask:int) =
   && ((ask - bid) >= 15)then Some false 
   else None
 
-(* Take in bid and ask and return string for feedback. *)
+(* [eval_trade bid ask] is a string message that acts as feedback to a [bid] and [ask]. *)
 let eval_trade bid ask =
   match (check_good_interval bid ask) with
   | Some x -> 

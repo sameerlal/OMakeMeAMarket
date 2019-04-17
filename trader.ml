@@ -110,7 +110,8 @@ let make_trade trader transaction =
     Some (t, "hit")
   else None
 
-(**ADD DOC *)
+(**[make_trade_dumb t transaction] is an option of None or Some pair of dummy 
+   type t [trader] and a string denoting whether the trader will lift or hit. *)
 let make_trade_dumb (trader:t) (transaction:transaction) = 
   let time = Random.int 2 in 
   let seed = (time) mod 2 in 

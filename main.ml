@@ -16,9 +16,12 @@ type big_state = {
   traders : trader_players
 }
 
+(**[init_trader_players true_value] is the group of traders playing with the 
+   player. *)
 let init_trader_players true_value = 
   { simple_ai = (Trader.init_trader true_value) }
 
+(**[parse_user_input state] is the parsing of the user's input commands. *)
 let rec parse_user_input state = 
   print_endline "\n \n Make a market:   \n";
   print_string "> ";
@@ -31,7 +34,8 @@ let rec parse_user_input state =
     end
 
 
-
+(**[fsm fermi state] is the looping fsm that keeps the game playing based on the 
+   commands put in by the user. *)
 let fsm fermi (state: big_state) = 
   let user_command = parse_user_input state in 
   if (Marketmaker.get_timestamp state.mmstate) = 69 then 
@@ -82,7 +86,7 @@ let fsm fermi (state: big_state) =
       end
     | _ -> print_endline "Done"; state
 
-
+(**[cli fermi big_state] results in the printing of the statistics for a player at every command input and initializes the game. *)
 let rec cli fermi big_state = 
   ANSITerminal.(print_string [blue]
                   "------------------- Statistics ------------------- \n");
@@ -99,7 +103,7 @@ let rec cli fermi big_state =
   | _ ->  cli fermi (fsm fermi big_state )
 
 
-
+(**[init_big_state true_value] is an initial big_state with the true value of the security. *)
 let init_big_state true_value = 
   {
     mmstate =  Marketmaker.init_market "init";

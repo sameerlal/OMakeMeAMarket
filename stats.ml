@@ -84,11 +84,6 @@ let rec get_max lst acc =
   | [] -> acc
   | h::t -> if h > (List.hd acc) then get_max t [h] else get_max t acc
 
-let plot_data data =
-  let xlength = List.length data.time_data in
-  let ylen_est = get_max data.ask_data in 
-  failwith "Unimplemented"
-
 (**[get_data true_val bidask_lst bids asks trades times] is a record 
    containing the history of the market's bids, asks, trade types and the true value of 
    the security. It takes in the bidask history of the market in [bidask_lst] 
@@ -116,12 +111,13 @@ let get_graph (market : Marketmaker.t) (trader : Trader.t) =
   let trade = [] in 
   get_data true_val bidask_lst bid_lst ask_lst trade times
 
-
+(**[bid_acc lst acc] is the list of bids in bidask list [lst]. *)
 let rec bid_acc (lst : Marketmaker.bidask list) acc =
   match lst with
   | [] -> List.rev acc
   | h::t -> bid_acc t (h.bid::acc)
 
+(**[ask_acc lst acc] is the list of asks in bidask list [lst]. *)
 let rec ask_acc (lst : Marketmaker.bidask list) acc =
   match lst with
   | [] -> List.rev acc
@@ -131,6 +127,8 @@ let text_capture (market : Marketmaker.t) =
   print_endline "Trace";
   ()
 
+(**[linear_reg_cheat market] is the linear regression of the bids or asks in 
+   the market based on what the market has seen more of.  *)
 let linear_reg_cheat (market : Marketmaker.t ) = 
   let bid_list = (bid_acc (market.bid_ask_history) []) in
   let ask_list = (ask_acc (market.bid_ask_history) []) in

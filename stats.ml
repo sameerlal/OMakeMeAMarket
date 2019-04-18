@@ -11,17 +11,21 @@ open Marketmaker
   *    - Mean spread, bids, asks, trade count
   *    - Max spread, bids, asks 
   *
-  *     In implementaiton 1, the cheat command currently compares previous bid/asks
-  *     and uses a linear regression model to suggest the next move, referencing the actual value.
+  *     In implementaiton 1, the cheat command currently compares previous 
+  *     bid/asks and uses a linear regression model to suggest the next move, 
+  *     referencing the actual value.
   *)
-type graph_data = {bid_data : int list; ask_data : int list; trade_data : string list; time_data : int list; true_value : int}
+type graph_data = {bid_data : int list; ask_data : int list; 
+                   trade_data : string list; time_data : int list;
+                   true_value : int}
 
 (**[to_float_list_acc acc] is a list of floats from a string list. *)
 let rec to_float_list_acc acc = function
   |[] -> acc
   |h::t -> to_float_list_acc ((float_of_string h):: acc) t 
 
-(**[to_float_list lst] is a list of floats converted from the string list [lst] *)
+(**[to_float_list lst] is a list of floats converted from the string list 
+   [lst] *)
 let to_float_list lst =
   to_float_list_acc [] lst |> List.rev
 
@@ -66,17 +70,20 @@ let last_three_lsr lst =
   ((length +. 1.0) -. b) /. m
 
 
-(** [newton_raphson_secant f start] approximates the root of a function [f] starting at seed value [start].
-    Returns None if not converged or Some x where x is the converged value.  This approximates the derivative
-    of the function as a secant line rather than the traditional tangent method *)
+(** [newton_raphson_secant f start] approximates the root of a function [f] 
+    starting at seed value [start].
+    Returns None if not converged or Some x where x is the converged value.  
+    This approximates the derivative
+    of the function as a secant line rather than the traditional tangent 
+    method *)
 let newton_raphson_secant f start = 
   let dfdx fu =
     fun x -> (fu (x +. 0.1) -. fu x) /. 0.1 in
   let rec iter xk number =
     let update = start -. (f xk /. (dfdx f) xk) in 
     if number > 100 then None else 
-    if (abs_float (update -. xk) < 0.01) then Some xk else iter xk (number + 1) in
-  iter start 0
+    if (abs_float (update -. xk) < 0.01) then Some xk else iter xk (number + 1) 
+    in iter start 0
 
 (**[get_max lst acc] is the max value in the list [lst]. *)
 let rec get_max lst acc =
@@ -85,13 +92,16 @@ let rec get_max lst acc =
   | h::t -> if h > (List.hd acc) then get_max t [h] else get_max t acc
 
 (**[get_data true_val bidask_lst bids asks trades times] is a record 
-   containing the history of the market's bids, asks, trade types and the true value of 
+   containing the history of the market's bids, asks, trade types and the true 
+   value of 
    the security. It takes in the bidask history of the market in [bidask_lst] 
    and the [true_val] of the security. *)
 let rec get_data true_val bidask_lst bids asks trades times =
   match bidask_lst with
-  | [] -> {bid_data = bids; ask_data = asks; trade_data = trades; time_data = times; true_value = true_val}
-  | h::t -> get_data true_val t (h.bid::bids) (h.ask::asks) (h.trade_type::trades) times
+  | [] -> {bid_data = bids; ask_data = asks; trade_data = trades; 
+           time_data = times; true_value = true_val}
+  | h::t -> get_data true_val t (h.bid::bids) (h.ask::asks) 
+                                  (h.trade_type::trades) times
 
 (**[list_of_ints strt nd] is a list of ints in ascending order from [strt] to 
    [nd]. *)
@@ -136,18 +146,20 @@ let linear_reg_cheat (market : Marketmaker.t ) =
     (* Linear regression for asks *)
     if List.length ask_list < 3 then
       -1.0  else 
-      abs_float (125.0 -. (last_three_lsr ((List.nth ask_list 
-                                              (List.length ask_list - 3))::(List.nth ask_list 
-                                                                              (List.length ask_list - 2))::(List.nth ask_list 
-                                                                                                              (List.length ask_list - 1))::[])  ))
+      abs_float (125.0 -. (last_three_lsr 
+      ((List.nth ask_list 
+        (List.length ask_list - 3))::(List.nth ask_list 
+          (List.length ask_list - 2))::(List.nth ask_list 
+            (List.length ask_list - 1))::[])  ))
   else 
     (*  Linear regression for bids*)
   if List.length bid_list < 3 then
     -1.0  else 
-    abs_float (125.0 -. (last_three_lsr ((List.nth bid_list 
-                                            (List.length ask_list - 3))::(List.nth bid_list 
-                                                                            (List.length ask_list - 2))::(List.nth bid_list 
-                                                                                                            (List.length ask_list - 1))::[])  ))
+    abs_float (125.0 -. (last_three_lsr 
+      ((List.nth bid_list 
+        (List.length ask_list - 3))::(List.nth bid_list 
+          (List.length ask_list - 2))::(List.nth bid_list 
+            (List.length ask_list - 1))::[])  ))
 
 (**[count lst str acc] is the frequency of occurrence of [str] in [lst]. *)
 let rec count lst str acc =
@@ -163,7 +175,7 @@ let trade_freq market trader =
   let trades = info.trade_data in
   let hits = count trades "hit" 0 in 
   let lifts = count trades "lift" 0 in
-  let prnt = ["hits = "^(string_of_int hits); "lifts = "^(string_of_int lifts)] in 
-  List.iter print_string prnt
+  let prnt = ["hits = "^(string_of_int hits); "lifts = "^(string_of_int lifts)] 
+    in List.iter print_string prnt
 
 

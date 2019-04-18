@@ -19,6 +19,26 @@ type t = {
   situations : situation list;
   ascii : string
 }
+(* This is for testing purposes BEGIN *)
+let fermi_json : t = {id = "1";
+                      fermi = [{question = "What is the volume of air that I breathe in one day?"; answer = "2800"};
+                              {question = "How many people in the world are talking on their cell phones in any given minute? (in millions)"; answer = "125"}];
+                      situations = [{event = "Flash Crash, all stocks are down"; effect = "-10%"};
+                                         {event = "Interest rates decrease"; effect = "+2%"}];
+                      ascii =
+                      "
+WW      WW EEEEEEE LL       CCCCC   OOOOO  MM    MM EEEEEEE          TTTTTTT RRRRRR    AAA   DDDDD   EEEEEEE RRRRRR     !!! 
+WW      WW EE      LL      CC    C OO   OO MMM  MMM EE                 TTT   RR   RR  AAAAA  DD  DD  EE      RR   RR    !!! 
+WW   W  WW EEEEE   LL      CC      OO   OO MM MM MM EEEEE              TTT   RRRRRR  AA   AA DD   DD EEEEE   RRRRRR     !!! 
+ WW WWW WW EE      LL      CC    C OO   OO MM    MM EE                 TTT   RR  RR  AAAAAAA DD   DD EE      RR  RR         
+  WW   WW  EEEEEEE LLLLLLL  CCCCC   OOOO0  MM    MM EEEEEEE            TTT   RR   RR AA   AA DDDDDD  EEEEEEE RR   RR    !!!
+      "  }
+
+let oth_situation = {event = "Flash Crash, all stocks are down"; effect = "-10%"}
+let first_situation = {event = "Interest rates decrease"; effect = "+2%"}
+(* END *)
+
+
 
 (**[situationofjson json] is a type situation with event and effect from the 
    [json] file. *)
@@ -75,10 +95,10 @@ let get_event_from_situation (sit : situation) =
    if it it causes the price to rise or to fall *)
 let get_effect_from_situation (sit: situation) = 
   let s = (String.get sit.effect 0) in
-  let rest = (String.sub sit.effect 1 (String.length sit.effect)) in 
+  let rest = (String.sub sit.effect 1 (String.length sit.effect - 1)) in 
   match s with
   | '+' -> Some ("increase", rest)
-  | '-' -> Some ("increase", rest) (*decrease?*)
+  | '-' -> Some ("decrease", rest) (*decrease?*)
   | _ -> failwith "Error with situation's effect value in json"
 
 

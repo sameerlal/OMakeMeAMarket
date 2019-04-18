@@ -113,11 +113,11 @@ let make_linear_reg_cheat_test
 let linear_reg_cheat_tests = [
   (* make tests plz *)
 ]
-(*Trader's types *)
+(*Trader's tests stuff *)
 let sample_bidask = {
   bid = 10;
-  ask = 11;
-  spread = 1
+  ask = 1100;
+  spread = 1090
 }
 
 let sample_transaction = {
@@ -134,13 +134,78 @@ let sample_orderbook = {
 
 let sample_trader = {
   true_value = 125;
-  avg_buy_value = 25;
+  avg_buy_value = 0;
   profit = 0 ;
   cash = 200;
-  inventory = 4; (* Total number of shares owned *)
+  inventory = 2; (* Total number of shares owned *)
   orderbook = sample_orderbook;
 }
 let trader_tests = [
+  "init_trader" >:: (fun _ -> assert_equal ({true_value = 20; avg_buy_value = 0; profit = 0; cash = 1000000; inventory = 0; 
+                                             orderbook = {transactions = []; buys = 0; sells = 0}}) (init_trader 20)) ;
+  "make_trade_test" >:: (fun _ -> assert_equal (None) (make_trade sample_trader sample_transaction));
+  "make_trade_dumb_test 1" >:: (fun _ -> assert_equal (None) (make_trade_dumb sample_trader sample_transaction));
+]
+
+(*Marketmaker's tests stuff*)
+let samplem_bidask = {
+  trade_type = "init";
+  bid=10;
+  ask=1100;
+  spread=1090;
+}
+
+(* keeps track of market maker's holdings *)
+let samplem_orderbook = {
+  outstanding_shares=0;
+}
+
+(* Holds market maker type *)
+let sample_market = {
+  currbidask=samplem_bidask;
+  bid_ask_history=[samplem_bidask];
+  timestamp=0;
+  curr_profit=0;
+  orderbook=samplem_orderbook
+}
+
+let sample_market_2 = {
+  currbidask={samplem_bidask with trade_type = "hit"};
+  bid_ask_history=[samplem_bidask; {samplem_bidask with trade_type = "hit"}];
+  timestamp=1;
+  curr_profit= -10;
+  orderbook={outstanding_shares=1}
+}
+(* Trade variant.  To be sent to engine *)
+
+let sample_send_market = {
+  timestamp = 0;
+  transaction = samplem_bidask;
+}
+
+let sample_receive_transaction =  {
+  timestamp=0;
+  trade_type="hit"; (* hit the bid or lifted offer *)
+  transaction=samplem_bidask;
+}
+let marketmaker_tests = [
+  "init_trader_test" >:: (fun _ -> assert_equal ({
+      currbidask = {
+        trade_type = "init";
+        bid = 0;
+        ask = 0;
+        spread = 0;
+      };
+      bid_ask_history = [];
+      timestamp = 0;
+      curr_profit = 0;
+      orderbook = {
+        outstanding_shares = 0
+      }
+    }) (Marketmaker.init_market "init")) ;
+  "transaction_test" >:: 
+  (fun _ -> assert_equal (sample_market_2) 
+      (transaction sample_receive_transaction sample_market));
 
 ]
 
@@ -153,6 +218,8 @@ let suite =
     get_graph_tests;
     text_capture_tests;
     linear_reg_cheat_tests;
+    trader_tests;
+    marketmaker_tests
   ]
 
 let _ = run_test_tt_main suite 

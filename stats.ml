@@ -49,7 +49,7 @@ let get_variance lst =
 
 (**[last_three_val] is a list of the last three values in the lst. *)
 let rec last_three_val = function
-  |[] -> failwith "empty list"
+  |[] -> failwith "empty list or less thasn 3 values"
   |x::y::z::[] -> [float x; float y; float z]
   |h::t -> last_three_val t
 

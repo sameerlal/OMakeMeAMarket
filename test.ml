@@ -46,7 +46,7 @@ let make_get_mean_test
     (lst : float list)
     (expected_output : float ): test =
   name >:: (fun _ -> assert_equal expected_output (Stats.get_mean lst)
-  ~printer: (pp_float))
+               ~printer: (pp_float))
 
 let get_mean_tests = [
   make_get_mean_test "get_mean test 1: single elt" [1.5456] 1.5456;
@@ -59,7 +59,7 @@ let make_get_variance_test
     (lst : float list)
     (expected_output : float ): test =
   name >:: (fun _ -> assert_equal expected_output (floor (Stats.get_variance lst))
-  ~printer: (pp_float))
+               ~printer: (pp_float))
 
 let get_variance_tests = [
   make_get_variance_test "get_variance test 1: single elt" [1.5456] 0.0;
@@ -72,15 +72,12 @@ let make_last_three_lsr_test
     (lst : int list)
     (expected_output : float ): test =
   name >:: (fun _ -> assert_equal expected_output (floor (Stats.last_three_lsr lst))
-  ~printer: (pp_float))
+               ~printer: (pp_float))
 
 let last_three_lsr_tests = [
   make_last_three_lsr_test "last_three_lsr test 2: lst" 
     [3; 2; 1] (-0.);
 ]
-
-open Marketmaker
-open Trader
 
 let make_get_graph_test
     (name : string)
@@ -88,7 +85,7 @@ let make_get_graph_test
     (trader : Trader.t)
     (expected_output : graph_data ): test =
   name >:: (fun _ -> assert_equal expected_output (Stats.get_graph market trader))
-  
+
 
 let get_graph_tests = [
   (* make tests plz *)
@@ -111,7 +108,7 @@ let make_linear_reg_cheat_test
     (market : Marketmaker.t )
     (expected_output : float ): test =
   name >:: (fun _ -> assert_equal expected_output (Stats.linear_reg_cheat market ))
-  
+
 
 let linear_reg_cheat_tests = [
   (* make tests plz *)

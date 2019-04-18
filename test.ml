@@ -2,6 +2,7 @@
    TESTING SUITE 
  ********************************************************************)
 open OUnit2
+open Yojson.Basic.Util
 open Trader
 open Marketmaker
 open Command
@@ -220,7 +221,7 @@ let make_from_json_test
     (market : Yojson.Basic.t )
     (expected_output : Parse.t ): test =
   name >:: (fun _ -> assert_equal expected_output (Parse.from_json market ))
-  
+
 
 let from_json_tests = [
   make_from_json_test "from_json test 1: fermi" fermi fermi_json
@@ -233,8 +234,8 @@ let make_get_question_test
     (data : Parse.t )
     (expected_output : string ): test =
   name >:: (fun _ -> assert_equal expected_output (Parse.get_question data )
-  ~printer: pp_string)
-  
+               ~printer: pp_string)
+
 
 let get_question_tests = [
   make_get_question_test "get_question test 1: fermi" fermi_json 
@@ -246,8 +247,8 @@ let make_get_answer_test
     (data : Parse.t )
     (expected_output : string ): test =
   name >:: (fun _ -> assert_equal expected_output (Parse.get_answer data )
-  ~printer: pp_string)
-  
+               ~printer: pp_string)
+
 
 let get_answer_tests = [
   make_get_answer_test "get_answer test 1: fermi" fermi_json "125"
@@ -262,8 +263,8 @@ let make_get_nth_situation_test
     (data : Parse.t )
     (expected_output : Parse.situation ): test =
   name >:: (fun _ -> assert_equal expected_output 
-                      (Parse.get_nth_situation index data))
-  
+               (Parse.get_nth_situation index data))
+
 
 let get_nth_situation_tests = [
   make_get_nth_situation_test "get_nth_situation test 1: 0th" 0 fermi_json oth_situation;
@@ -275,9 +276,9 @@ let make_get_event_from_situation_test
     (sit : Parse.situation )
     (expected_output : string ): test =
   name >:: (fun _ -> assert_equal expected_output 
-                      (Parse.get_event_from_situation sit)
-  ~printer: pp_string)
-  
+               (Parse.get_event_from_situation sit)
+               ~printer: pp_string)
+
 
 let get_event_from_situation_tests = [
   make_get_event_from_situation_test "get_event_from_situation test 1: 0th" oth_situation "Flash Crash, all stocks are down";
@@ -289,8 +290,8 @@ let make_get_effect_from_situation_test
     (sit : Parse.situation )
     (expected_output : (string * string) option ): test =
   name >:: (fun _ -> assert_equal expected_output 
-                      (Parse.get_effect_from_situation sit))
-  
+               (Parse.get_effect_from_situation sit))
+
 
 let get_effect_from_situation_tests = [
   make_get_effect_from_situation_test "get_effect_from_situation test 1: 0th" oth_situation (Some ("decrease", "10%"));
@@ -302,8 +303,8 @@ let make_get_intro_test
     (data : Parse.t )
     (expected_output : unit ): test =
   name >:: (fun _ -> assert_equal expected_output 
-                      (Parse.get_intro data))
-  
+               (Parse.get_intro data))
+
 
 let get_intro_tests = [
   make_get_intro_test "get_intro test 1: fermi" fermi_json ();

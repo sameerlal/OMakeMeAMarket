@@ -1,4 +1,4 @@
-MODULES=gui marketmaker trader command parse stats main
+MODULES=gui marketmaker trader command parse stats main authors
 OBJECTS=$(MODULES:=.cmo)
 MLS=$(MODULES:=.ml)
 MLIS=$(MODULES:=.mli)
@@ -26,7 +26,7 @@ finalcheck: check
 	bash finalcheck.sh
 
 zip:
-	zip adv.zip *.ml* *.json _tags Makefile
+	zip market.zip *.ml* *.json _tags Makefile
 
 docs: docs-public docs-private
 

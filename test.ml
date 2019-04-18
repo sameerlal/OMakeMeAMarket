@@ -7,11 +7,11 @@ open Trader
 open Marketmaker
 open Command
 open Parse
+open Stats 
 
 let suite = "CamlCoin Test suite" >::: []
 
 (** Tests for stats,ml  *)
-open Stats
 
 let pp_float x = string_of_float x
 
@@ -211,7 +211,6 @@ let marketmaker_tests = [
 ]
 
 (* Tests for parse.ml *)
-open Parse
 
 let fermi = Yojson.Basic.from_file "fermi.json"
 let fermi_json = Parse.fermi_json
@@ -310,6 +309,25 @@ let get_intro_tests = [
   make_get_intro_test "get_intro test 1: fermi" fermi_json ();
 ]
 
+(* Command.ml tests *)
+let make_parse_test
+    (name : string)
+    (str : string )
+    (expected_output : Command.command ): test =
+  name >:: (fun _ -> assert_equal expected_output (Command.parse str))
+
+
+let parse_tests = [
+  make_parse_test "Parse test 1: set" "set 10 20" (Set (["10";"20"]));
+  make_parse_test "Parse test 2: inventory" "inventory" Inventory;
+  make_parse_test "Parse test 3: history" "history" History;
+  make_parse_test "Parse test 4: quit" "quit" Quit;
+  make_parse_test "Parse test 5: tutorial" "tutorial" Tutorial;
+  make_parse_test "Parse test 6: help" "help" Help;
+  make_parse_test "Parse test 7: cheat" "cheat" Cheat;
+]
+
+
 let suite = 
   "test suite for CamlCoin" >::: List.flatten [
     to_float_list_tests;
@@ -317,7 +335,7 @@ let suite =
     get_variance_tests;
     last_three_lsr_tests;
     get_graph_tests;
-    text_capture_tests;
+    (* text_capture_tests; *)
     linear_reg_cheat_tests;
     (* from_json_tests; *)
     get_question_tests;
@@ -325,9 +343,10 @@ let suite =
     get_nth_situation_tests;
     get_event_from_situation_tests;
     get_effect_from_situation_tests;
-    get_intro_tests;
+    (* get_intro_tests; *)
     trader_tests;
-    marketmaker_tests
+    marketmaker_tests;
+    parse_tests;
   ]
 
 let _ = run_test_tt_main suite 

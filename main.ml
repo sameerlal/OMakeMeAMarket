@@ -15,11 +15,7 @@ let opponents = 3
 
 exception UnknownFile
 
-type trader_players = {
-  simple_ai : Trader.t;
-  ai1 : Trader.t;
-  ai2 : Trader.t;
-}
+type trader_players = Trader.trader_players
 
 type big_state = {
   mmstate : Marketmaker.t;

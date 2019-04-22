@@ -19,6 +19,7 @@ type orderbook = {
 }
 
 type t = {
+  id : string;
   hidden_number : int;
   avg_buy_value : int;
   profit : int;
@@ -34,7 +35,7 @@ type trader_players = {
 }
 
 
-val init_trader :  int -> t
+val init_trader :  int -> string -> t
 val make_trade : t -> transaction -> (t * string) option
 val make_trade_dumb : t -> transaction -> (t * string) option
 val make_transaction : int -> int -> int -> string -> transaction

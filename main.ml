@@ -26,9 +26,9 @@ type big_state = {
 (**[init_trader_players roll_list] is the group of traders playing with the 
    player. *)
 let init_trader_players (rolls:int list) : trader_players = 
-  { simple_ai = (Trader.init_trader (List.nth rolls 0));
-    ai1 = (Trader.init_trader (List.nth rolls 1));
-    ai2 = (Trader.init_trader (List.nth rolls 2));
+  { simple_ai = (Trader.init_trader (List.nth rolls 0) "1");
+    ai1 = (Trader.init_trader (List.nth rolls 1) "2");
+    ai2 = (Trader.init_trader (List.nth rolls 2) "3");
   }  
 
 
@@ -94,7 +94,7 @@ let fsm fermi (state: big_state) =
             dice = state.dice
           } in 
           match response with
-          | "lift" -> print_endline "Trader bought a CamlCoin (lifted your offer)"; new_state
+          | "lift" -> print_endline ("Trader " ^ new_trader_state.id ^ " bought a CamlCoin (lifted your offer)"); new_state
           | "hit" -> print_endline "Trader sold a CamlCoin (hit your bid)"; new_state
           | _ -> print_endline "error in trader's make trade"; exit 2
       end

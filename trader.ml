@@ -1,6 +1,8 @@
 open Pervasives
 open Random
 
+let num_opponents = 3
+
 type bidask = {
   bid: int;
   ask: int;
@@ -26,6 +28,12 @@ type t = {
   cash : int;
   inventory : int; (* Total number of shares owned *)
   orderbook : orderbook;
+}
+
+type trader_players = {
+  simple_ai : t;
+  ai1 : t;
+  ai2 : t;
 }
 
 (**ADD DOCS *)
@@ -119,9 +127,32 @@ let make_trade trader transaction =
     Some (t, "hit")
   else None
 
-(**[make_trade_dumb t transaction] is an option of None or Some pair of dummy 
-   type t [trader] and a string denoting whether the trader will lift or hit. *)
+
+
+
+let contention_for_trade (traders_data : trader_players) (trans :transaction) = 
+  (* Need to figure out who gets the trade, this should return an identifier also*)
+  failwith "not done"
+
+
 let make_trade_dumb (trader:t) (transaction:transaction) = 
+  if float_of_int transaction.bidask.bid > (float_of_int num_opponents)*.3.5 +. (float_of_int trader.hidden_number) then 
+    Some(trader, "hit")
+  else if float_of_int transaction.bidask.ask < (float_of_int num_opponents)*.3.5 +. (float_of_int trader.hidden_number) then
+    Some (trader, "lift")
+  else
+    None
+
+
+let make_trade_ai1 (trader:t) (transaction:transaction) = 
+  failwith "Unimplemented ai1"
+
+let make_trade_ai2 (trader:t) (transaction:transaction) = 
+  failwith "Unimplemented ai2"
+
+(**[make_trade_dumb2 t transaction] is an option of None or Some pair of dummy 
+   type t [trader] and a string denoting whether the trader will lift or hit. *)
+let make_trade_dumb2 (trader:t) (transaction:transaction) = 
   let time = Random.int 2 in 
   let seed = (time) mod 2 in 
   if (abs (transaction.bidask.ask - trader.hidden_number) < 10) &&

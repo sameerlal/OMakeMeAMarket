@@ -10,6 +10,8 @@ type transaction = {
   order_type : string; (* bid or ask *)
 }
 
+
+
 type orderbook = {
   transactions : transaction list;
   buys: int;
@@ -23,6 +25,12 @@ type t = {
   cash : int;
   inventory : int; (* Total number of shares owned *)
   orderbook : orderbook;
+}
+
+type trader_players = {
+  simple_ai : t;
+  ai1 : t;
+  ai2 : t;
 }
 
 

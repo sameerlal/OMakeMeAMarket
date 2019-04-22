@@ -17,7 +17,7 @@ type orderbook = {
 }
 
 type t = {
-  true_value : int;
+  hidden_number : int;
   avg_buy_value : int;
   profit : int;
   cash : int;

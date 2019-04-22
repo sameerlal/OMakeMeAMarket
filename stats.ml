@@ -15,9 +15,43 @@ open Marketmaker
   *     bid/asks and uses a linear regression model to suggest the next move, 
   *     referencing the actual value.
   *)
+
+(* 
+ *    DICE ROLLING SIMULATION
+ *     - roll dice
+ *     - calculate statistics
+ *)
+type dice_data = {
+  player_roll : int;
+  other_rolls : int list;
+  sum_rolls : int;
+}
+
+let rec roll_list (num:int) (acc: int list) : (int list) =
+  if num = 0 
+  then acc 
+  else 
+    roll_list (num - 1) ((1 + Random.int 5)::acc)
+
+let get_player_roll (d:dice_data) : int = d.player_roll
+
+let mega_roll (num_opp:int) : dice_data =
+  let playroll = (Random.int 5) + 1 in 
+  let other_list = roll_list num_opp [] in
+  {
+    player_roll = playroll;
+    other_rolls = other_list;
+    sum_rolls = (playroll + (List.fold_left (fun acc h -> acc + h) 0 other_list) );
+  }
+
+(* END DICE *)
+
+
+
+
 type graph_data = {bid_data : int list; ask_data : int list; 
                    trade_data : string list; time_data : int list;
-                   true_value : int}
+                   hidden_number : int}
 
 (**[to_float_list_acc acc] is a list of floats from a string list. *)
 let rec to_float_list_acc acc = function
@@ -83,7 +117,7 @@ let newton_raphson_secant f start =
     let update = start -. (f xk /. (dfdx f) xk) in 
     if number > 100 then None else 
     if (abs_float (update -. xk) < 0.01) then Some xk else iter xk (number + 1) 
-    in iter start 0
+  in iter start 0
 
 (**[get_max lst acc] is the max value in the list [lst]. *)
 let rec get_max lst acc =
@@ -99,9 +133,9 @@ let rec get_max lst acc =
 let rec get_data true_val bidask_lst bids asks trades times =
   match bidask_lst with
   | [] -> {bid_data = bids; ask_data = asks; trade_data = trades; 
-           time_data = times; true_value = true_val}
+           time_data = times; hidden_number = true_val}
   | h::t -> get_data true_val t (h.bid::bids) (h.ask::asks) 
-                                  (h.trade_type::trades) times
+              (h.trade_type::trades) times
 
 (**[list_of_ints strt nd] is a list of ints in ascending order from [strt] to 
    [nd]. *)
@@ -113,7 +147,7 @@ let rec list_of_ints strt nd lst =
    the types of trades made and the true value of the security. It takes in 
    a [market] type t and a [trader] type t*)
 let get_graph (market : Marketmaker.t) (trader : Trader.t) =
-  let true_val = trader.true_value in
+  let true_val = trader.hidden_number in
   let bidask_lst = market.bid_ask_history in
   let times = list_of_ints 0 (List.length bidask_lst) [] in 
   let bid_lst = [] in 
@@ -147,19 +181,19 @@ let linear_reg_cheat (market : Marketmaker.t ) =
     if List.length ask_list < 3 then
       -1.0  else 
       abs_float (125.0 -. (last_three_lsr 
-      ((List.nth ask_list 
-        (List.length ask_list - 3))::(List.nth ask_list 
-          (List.length ask_list - 2))::(List.nth ask_list 
-            (List.length ask_list - 1))::[])  ))
+                             ((List.nth ask_list 
+                                 (List.length ask_list - 3))::(List.nth ask_list 
+                                                                 (List.length ask_list - 2))::(List.nth ask_list 
+                                                                                                 (List.length ask_list - 1))::[])  ))
   else 
     (*  Linear regression for bids*)
   if List.length bid_list < 3 then
     -1.0  else 
     abs_float (125.0 -. (last_three_lsr 
-      ((List.nth bid_list 
-        (List.length ask_list - 3))::(List.nth bid_list 
-          (List.length ask_list - 2))::(List.nth bid_list 
-            (List.length ask_list - 1))::[])  ))
+                           ((List.nth bid_list 
+                               (List.length ask_list - 3))::(List.nth bid_list 
+                                                               (List.length ask_list - 2))::(List.nth bid_list 
+                                                                                               (List.length ask_list - 1))::[])  ))
 
 (**[count lst str acc] is the frequency of occurrence of [str] in [lst]. *)
 let rec count lst str acc =
@@ -176,6 +210,5 @@ let trade_freq market trader =
   let hits = count trades "hit" 0 in 
   let lifts = count trades "lift" 0 in
   let prnt = ["hits = "^(string_of_int hits); "lifts = "^(string_of_int lifts)] 
-    in List.iter print_string prnt
-
+  in List.iter print_string prnt
 

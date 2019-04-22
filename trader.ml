@@ -20,7 +20,7 @@ type orderbook = {
 }
 
 type t = {
-  true_value : int;
+  hidden_number : int;
   avg_buy_value : int;
   profit : int;
   cash : int;
@@ -33,10 +33,12 @@ let change_true_value (trader:t) (adj_percentage:int) (down_or_up:bool) =
   failwith "Unimplemented"
 
 
+
 (**[init_trader unit] is an initial trader of type t. *)
 let init_trader true_value =
-  {true_value = true_value; avg_buy_value = 0; profit = 0; cash = 1000000; inventory = 0; 
+  {hidden_number = true_value; avg_buy_value = 0; profit = 0; cash = 1000000; inventory = 0; 
    orderbook = {transactions = []; buys = 0; sells = 0}}
+
 
 (**[get_curr_profit cash init_cash msell_price inventory] is the current 
    running profit of the trader. *)
@@ -68,7 +70,7 @@ let make_trade trader transaction =
   let book = trader.orderbook.transactions in
   let avg_val = trader.avg_buy_value in
   if trader.orderbook.buys = 0 then 
-    if buy_value < trader.true_value then
+    if buy_value < trader.hidden_number then
       let new_buys = trader.orderbook.buys + 1 in
       let new_sells = trader.orderbook.sells in 
       let new_cash = trader.cash - buy_value in
@@ -115,19 +117,19 @@ let make_trade trader transaction =
 let make_trade_dumb (trader:t) (transaction:transaction) = 
   let time = Random.int 2 in 
   let seed = (time) mod 2 in 
-  if (abs (transaction.bidask.ask - trader.true_value) < 10) &&
-     (abs (transaction.bidask.bid - trader.true_value) < 10 ) then
+  if (abs (transaction.bidask.ask - trader.hidden_number) < 10) &&
+     (abs (transaction.bidask.bid - trader.hidden_number) < 10 ) then
     match seed with
     | 0 -> Some (trader, "hit")
     | 1 -> Some (trader, "lift")
   else 
-  if transaction.bidask.ask < trader.true_value + 10 
+  if transaction.bidask.ask < trader.hidden_number + 10 
   then Some (trader, "lift")
-  else if transaction.bidask.bid > trader.true_value - 10
+  else if transaction.bidask.bid > trader.hidden_number - 10
   then Some (trader, "hit")
   else None
 
 (**[get_final_profit trader] is the profit of the trader type t at the end 
    of the game. *)
 let get_final_profit trader =
-  trader.profit + (trader.inventory * trader.true_value)
+  trader.profit + (trader.inventory * trader.hidden_number)

@@ -22,11 +22,11 @@ type t = {
 (* This is for testing purposes BEGIN *)
 let fermi_json : t = {id = "1";
                       fermi = [{question = "What is the volume of air that I breathe in one day?"; answer = "2800"};
-                              {question = "How many people in the world are talking on their cell phones in any given minute? (in millions)"; answer = "125"}];
+                               {question = "How many people in the world are talking on their cell phones in any given minute? (in millions)"; answer = "125"}];
                       situations = [{event = "Flash Crash, all stocks are down"; effect = "-10%"};
-                                         {event = "Interest rates decrease"; effect = "+2%"}];
+                                    {event = "Interest rates decrease"; effect = "+2%"}];
                       ascii =
-                      "
+                        "
 WW      WW EEEEEEE LL       CCCCC   OOOOO  MM    MM EEEEEEE          TTTTTTT RRRRRR    AAA   DDDDD   EEEEEEE RRRRRR     !!! 
 WW      WW EE      LL      CC    C OO   OO MMM  MMM EE                 TTT   RR   RR  AAAAA  DD  DD  EE      RR   RR    !!! 
 WW   W  WW EEEEE   LL      CC      OO   OO MM MM MM EEEEE              TTT   RRRRRR  AA   AA DD   DD EEEEE   RRRRRR     !!! 
@@ -67,7 +67,7 @@ let from_json json =
 
 (* Obtain a question from json *)
 (**[get_intro data] results in the ascii string being printed from the json. *)
-let get_intro (data: t) = 
+let get_intro (data: t) =
   print_endline (data.ascii)
 
 

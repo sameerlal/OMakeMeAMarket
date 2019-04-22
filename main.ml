@@ -11,21 +11,30 @@ open Command
 open Parse
 open Gui
 
+let opponents = 3
+
 exception UnknownFile
 
 type trader_players = {
   simple_ai : Trader.t;
+  ai1 : Trader.t;
+  ai2 : Trader.t;
 }
 
 type big_state = {
   mmstate : Marketmaker.t;
-  traders : trader_players
+  traders : trader_players;
+  dice : Stats.dice_data
 }
 
-(**[init_trader_players true_value] is the group of traders playing with the 
+(**[init_trader_players roll_list] is the group of traders playing with the 
    player. *)
-let init_trader_players true_value = 
-  { simple_ai = (Trader.init_trader true_value) }
+let init_trader_players (rolls:int list) : trader_players = 
+  { simple_ai = (Trader.init_trader (List.nth rolls 0));
+    ai1 = (Trader.init_trader (List.nth rolls 1));
+    ai2 = (Trader.init_trader (List.nth rolls 2));
+  }  
+
 
 (**[parse_user_input state] is the parsing of the user's input commands. *)
 let rec parse_user_input state = 
@@ -82,21 +91,30 @@ let fsm fermi (state: big_state) =
           let new_state = {
             mmstate = new_MM_state;
             traders = {
+              state.traders with
               simple_ai = new_trader_state
-            }
+
+            };
+            dice = state.dice
           } in 
           match response with
           | "lift" -> print_endline "Trader bought a CamlCoin (lifted your offer)"; new_state
           | "hit" -> print_endline "Trader sold a CamlCoin (hit your bid)"; new_state
           | _ -> print_endline "error in trader's make trade"; exit 2
       end
-    | _ -> print_endline "Done"; state
+
+let cycle_traders (bstate:big_state) : unit = 
+  let tr = bstate.traders in
+  print_endline (string_of_int tr.simple_ai.hidden_number);
+  print_endline (string_of_int tr.ai1.hidden_number);
+  print_endline (string_of_int tr.ai2.hidden_number)
 
 (**[cli fermi big_state] results in the printing of the statistics for a player at every command input and initializes the game. *)
 let rec cli fermi big_state = 
   ANSITerminal.(print_string [blue]
                   "------------------- Statistics ------------------- \n");
-  print_string ("Timestamp ");
+  cycle_traders big_state;
+  print_string ("\nTimestamp ");
   print_string ( string_of_int (Marketmaker.get_timestamp big_state.mmstate + 1));
   print_string (" |  Prev. bid/ask:  ");
   print_string (Marketmaker.stringify_bid_ask big_state.mmstate);
@@ -111,23 +129,26 @@ let rec cli fermi big_state =
 
 (**[init_big_state true_value] is an initial big_state with the true value of the security. *)
 let init_big_state true_value = 
+  let dice_state = Stats.mega_roll opponents in
   {
     mmstate =  Marketmaker.init_market "init";
-    traders = init_trader_players true_value;
+    traders = init_trader_players dice_state.other_rolls;
+    dice = dice_state;
   }
 
 
 let play_game f =
   let obtained_json = Yojson.Basic.from_file f in
   let fermi = Parse.from_json obtained_json in
-  let true_value = Parse.get_answer fermi in   
+  let big_state = init_big_state opponents in 
   ANSITerminal.erase Above;
   Parse.get_intro fermi;
+  Unix.sleep 1;
   print_endline "\n";
-  Gui.introduction ();
-  print_endline (Parse.get_question fermi);
+  Gui.introduction_adv ();
+  ANSITerminal.print_string [ANSITerminal.green] (string_of_int (Stats.get_player_roll big_state.dice));
   print_endline ("\n \n Let us begin... make your market:  ");
-  cli fermi (init_big_state (int_of_string true_value))
+  cli fermi big_state
 
 let main () = 
   Gui.preamble ();

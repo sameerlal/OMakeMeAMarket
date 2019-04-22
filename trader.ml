@@ -60,6 +60,13 @@ let make_transaction timestamp bid ask order_type =
     order_type = order_type;
   }
 
+(**[get_bids lst trans_lst] is the list of bids from [trans_lst]. *)
+let get_bids trans_lst =
+  (* match trans_lst with
+     | [] -> list
+     | h::t -> h.bidask.bid::list *)
+  List.map (fun x -> x.bidask.bid ) trans_lst
+
 (**[make_sell trader transaction] is an option either of Some new type t trader (or the old 
    trader depending on whether the trader will accept the marketmaker's bid 
    for the security) or None which indicates whether trade was accepted. *)
@@ -128,6 +135,135 @@ let make_trade_dumb (trader:t) (transaction:transaction) =
   else if transaction.bidask.bid > trader.hidden_number - 10
   then Some (trader, "hit")
   else None
+
+let make_trade_weary trader transaction =
+  let sell_value = transaction.bidask.bid in
+  let buy_value = transaction.bidask.ask in
+  let inv = trader.inventory in 
+  let book = trader.orderbook.transactions in
+  let avg_val = trader.avg_buy_value in
+  if trader.orderbook.buys = 0 then 
+    if buy_value < trader.hidden_number then
+      let new_buys = trader.orderbook.buys + 1 in
+      let new_sells = trader.orderbook.sells in 
+      let new_cash = trader.cash - buy_value in
+      let newtransaction = {
+        transaction with order_type = "bid"
+      } in
+      let t = {trader with avg_buy_value = 
+                             (avg_val* (new_buys - 1) + buy_value) / new_buys; 
+                           profit = (get_curr_profit new_cash sell_value inv+1); 
+                           inventory = inv - 1; 
+                           orderbook = {transactions = newtransaction::book; 
+                                        buys = new_buys; sells = new_sells}} in
+      Some (t, "hit")
+    else None
+  else if sell_value > avg_val && inv > 0 then
+    let new_buys = trader.orderbook.buys in
+    let new_sells = trader.orderbook.sells + 1 in 
+    let new_cash = trader.cash + sell_value in
+    let newtransaction = {
+      transaction with order_type = "ask"
+    } in
+    let t = {trader with profit = (get_curr_profit new_cash sell_value inv-1); 
+                         inventory = inv + 1; 
+                         orderbook = {transactions = newtransaction::book; 
+                                      buys = new_buys; sells = new_sells}} in 
+    Some (t, "lift")
+  else if buy_value < avg_val && trader.cash > (buy_value * 2) then 
+    let new_buys = trader.orderbook.buys + 1 in
+    let new_sells = trader.orderbook.sells in 
+    let new_cash = trader.cash - buy_value in
+    let newtransaction = {
+      transaction with order_type = "bid"
+    } in
+    let t = {trader with avg_buy_value = (avg_val + buy_value) / new_buys; 
+                         profit = (get_curr_profit new_cash sell_value inv+1); 
+                         inventory = inv - 1; 
+                         orderbook = {transactions = newtransaction::book; 
+                                      buys = new_buys; sells = new_sells}} in
+    Some (t, "hit")
+  else None
+
+let make_trade_stats trader transaction =
+  let sell_value = transaction.bidask.bid in
+  let buy_value = transaction.bidask.ask in
+  let inv = trader.inventory in 
+  let book = trader.orderbook.transactions in
+  let avg_val = trader.avg_buy_value in
+  if trader.orderbook.buys = 0 then
+    let new_buys = trader.orderbook.buys + 1 in
+    let new_sells = trader.orderbook.sells in 
+    let new_cash = trader.cash - buy_value in
+    let newtransaction = {
+      transaction with order_type = "bid"
+    } in
+    let t = {trader with avg_buy_value = 
+                           (avg_val* (new_buys - 1) + buy_value) / new_buys; 
+                         profit = (get_curr_profit new_cash sell_value inv+1); 
+                         inventory = inv - 1; 
+                         orderbook = {transactions = newtransaction::book; 
+                                      buys = new_buys; sells = new_sells}} in
+    Some (t, "hit")
+  else if trader.orderbook.buys < 3 then 
+    if sell_value > avg_val && inv > 0 then
+      let new_buys = trader.orderbook.buys in
+      let new_sells = trader.orderbook.sells + 1 in 
+      let new_cash = trader.cash + sell_value in
+      let newtransaction = {
+        transaction with order_type = "ask"
+      } in
+      let t = {trader with profit = (get_curr_profit new_cash sell_value inv-1); 
+                           inventory = inv + 1; 
+                           orderbook = {transactions = newtransaction::book; 
+                                        buys = new_buys; sells = new_sells}} in 
+      Some (t, "lift")
+    else if buy_value < avg_val && trader.cash > (buy_value * 2) then 
+      let new_buys = trader.orderbook.buys + 1 in
+      let new_sells = trader.orderbook.sells in 
+      let new_cash = trader.cash - buy_value in
+      let newtransaction = {
+        transaction with order_type = "bid"
+      } in
+      let t = {trader with avg_buy_value = (avg_val + buy_value) / new_buys; 
+                           profit = (get_curr_profit new_cash sell_value inv+1); 
+                           inventory = inv - 1; 
+                           orderbook = {transactions = newtransaction::book; 
+                                        buys = new_buys; sells = new_sells}} in
+      Some (t, "hit")
+    else None
+  else
+    let trans_list = trader.orderbook.transactions in
+    let list = get_bids trans_list in 
+    let least_sr = Stats.last_three_lsr list in 
+    if (Pervasives.float sell_value) > least_sr && inv > 0 then
+      let new_buys = trader.orderbook.buys in
+      let new_sells = trader.orderbook.sells + 1 in 
+      let new_cash = trader.cash + sell_value in
+      let newtransaction = {
+        transaction with order_type = "ask"
+      } in
+      let t = {trader with profit = (get_curr_profit new_cash sell_value inv-1); 
+                           inventory = inv + 1; 
+                           orderbook = {transactions = newtransaction::book; 
+                                        buys = new_buys; sells = new_sells}} in 
+      Some (t, "lift")
+    else if (Pervasives.float buy_value) < least_sr && trader.cash > (buy_value * 2) then 
+      let new_buys = trader.orderbook.buys + 1 in
+      let new_sells = trader.orderbook.sells in 
+      let new_cash = trader.cash - buy_value in
+      let newtransaction = {
+        transaction with order_type = "bid"
+      } in
+      let t = {trader with avg_buy_value = (avg_val + buy_value) / new_buys; 
+                           profit = (get_curr_profit new_cash sell_value inv+1); 
+                           inventory = inv - 1; 
+                           orderbook = {transactions = newtransaction::book; 
+                                        buys = new_buys; sells = new_sells}} in
+      Some (t, "hit")
+    else None
+
+
 
 (**[get_final_profit trader] is the profit of the trader type t at the end 
    of the game. *)

@@ -26,5 +26,67 @@ WW      WW EE      LL      CC    C OO   OO MMM  MMM EE                 TTT   RR 
 WW   W  WW EEEEE   LL      CC      OO   OO MM MM MM EEEEE              TTT   RRRRRR  AA   AA DD   DD EEEEE   RRRRRR     !!! 
  WW WWW WW EE      LL      CC    C OO   OO MM    MM EE                 TTT   RR  RR  AAAAAAA DD   DD EE      RR  RR         
   WW   WW  EEEEEEE LLLLLLL  CCCCC   OOOO0  MM    MM EEEEEEE            TTT   RR   RR AA   AA DDDDDD  EEEEEEE RR   RR    !!!
-      " 
+      ", 
+  "dice": [
+    {
+      "face1":
+    "
+    -----
+    |   |
+    | o |
+    |   |
+    -----
+    "
+    },
+    {
+      "face2":
+    "
+    -----
+    |o  |
+    |   |
+    |  o|
+    -----
+    "
+    },
+    {
+      "face3":
+    "
+    -----
+    |o  |
+    | o |
+    |  o|
+    -----
+    "
+    },
+    {
+      "face4":
+    "
+    -----
+    |o o|
+    |   |
+    |o o|
+    -----
+    "
+    },
+    {
+      "face5":
+    "
+    -----
+    |o o|
+    | o |
+    |o o|
+    -----
+    "
+    },
+    {
+      "face6":
+    "
+    -----
+    |o o|
+    |o o|
+    |o o|
+    -----
+    "
+    }
+  ]
 }

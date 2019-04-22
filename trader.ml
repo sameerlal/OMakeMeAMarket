@@ -131,11 +131,9 @@ let make_trade trader transaction =
 
 
 
-let contention_for_trade (traders_data : trader_players) (trans :transaction) = 
-  (* Need to figure out who gets the trade, this should return an identifier also*)
-  failwith "not done"
 
 
+(* Buy/Sell according to precalculated expected value *)
 let make_trade_dumb (trader:t) (transaction:transaction) = 
   if float_of_int transaction.bidask.bid > (float_of_int num_opponents)*.3.5 +. (float_of_int trader.hidden_number) then 
     Some(trader, "hit")
@@ -145,11 +143,7 @@ let make_trade_dumb (trader:t) (transaction:transaction) =
     None
 
 
-let make_trade_ai1 (trader:t) (transaction:transaction) = 
-  failwith "Unimplemented ai1"
 
-let make_trade_ai2 (trader:t) (transaction:transaction) = 
-  failwith "Unimplemented ai2"
 
 (**[make_trade_dumb2 t transaction] is an option of None or Some pair of dummy 
    type t [trader] and a string denoting whether the trader will lift or hit. *)
@@ -301,3 +295,30 @@ let make_trade_weary trader transaction =
    of the game. *)
 let get_final_profit trader =
   trader.profit + (trader.inventory * trader.hidden_number)
+
+
+
+let make_trade_ai1 (trader:t) (transaction:transaction) = 
+  make_trade_dumb trader transaction
+
+let make_trade_ai2 (trader:t) (transaction:transaction) = 
+  make_trade_dumb trader transaction
+
+let make_trade_ai2 (trader:t) (transaction:transaction) = 
+  make_trade_dumb trader transaction
+
+
+(* Need to figure out who gets the trade, this should return an identifier also*)
+let contention_for_trade (traders_data : trader_players) (trans :transaction) = 
+  let response1 = make_trade_ai1 traders_data.simple_ai trans in 
+  let response2 = make_trade_ai2 traders_data.ai1 trans in 
+  let response3 = make_trade_ai2 traders_data.ai2 trans in 
+  let agg = response1::response2::response3::[] in 
+  let candidates = List.filter (
+      fun x -> match x with
+        | None -> false
+        | Some (t, response)  -> true
+    ) agg in
+  if (List.length candidates = 0) then None else 
+    let winner_index = Random.int (List.length candidates) in
+    List.nth candidates winner_index

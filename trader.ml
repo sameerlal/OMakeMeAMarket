@@ -1,6 +1,8 @@
 open Pervasives
 open Random
 
+let num_opponents = 3
+
 type bidask = {
   bid: int;
   ask: int;
@@ -112,9 +114,19 @@ let make_trade trader transaction =
     Some (t, "hit")
   else None
 
-(**[make_trade_dumb t transaction] is an option of None or Some pair of dummy 
-   type t [trader] and a string denoting whether the trader will lift or hit. *)
+
 let make_trade_dumb (trader:t) (transaction:transaction) = 
+  if float_of_int transaction.bidask.bid > (float_of_int num_opponents)*.3.5 +. (float_of_int trader.hidden_number) then 
+    Some(trader, "hit")
+  else if float_of_int transaction.bidask.ask < (float_of_int num_opponents)*.3.5 +. (float_of_int trader.hidden_number) then
+    Some (trader, "lift")
+  else
+    None
+
+
+(**[make_trade_dumb2 t transaction] is an option of None or Some pair of dummy 
+   type t [trader] and a string denoting whether the trader will lift or hit. *)
+let make_trade_dumb2 (trader:t) (transaction:transaction) = 
   let time = Random.int 2 in 
   let seed = (time) mod 2 in 
   if (abs (transaction.bidask.ask - trader.hidden_number) < 10) &&
@@ -128,6 +140,8 @@ let make_trade_dumb (trader:t) (transaction:transaction) =
   else if transaction.bidask.bid > trader.hidden_number - 10
   then Some (trader, "hit")
   else None
+
+
 
 (**[get_final_profit trader] is the profit of the trader type t at the end 
    of the game. *)

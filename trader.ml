@@ -216,13 +216,13 @@ let make_trade_weary trader transaction =
     Some (t, "hit")
   else None
 
-let make_trade_stats trader transaction =
-  let sell_value = transaction.bidask.bid in
-  let buy_value = transaction.bidask.ask in
-  let inv = trader.inventory in 
-  let book = trader.orderbook.transactions in
-  let avg_val = trader.avg_buy_value in
-  if trader.orderbook.buys = 0 then
+(* let make_trade_stats trader transaction =
+   let sell_value = transaction.bidask.bid in
+   let buy_value = transaction.bidask.ask in
+   let inv = trader.inventory in 
+   let book = trader.orderbook.transactions in
+   let avg_val = trader.avg_buy_value in
+   if trader.orderbook.buys = 0 then
     let new_buys = trader.orderbook.buys + 1 in
     let new_sells = trader.orderbook.sells in 
     let new_cash = trader.cash - buy_value in
@@ -236,7 +236,7 @@ let make_trade_stats trader transaction =
                          orderbook = {transactions = newtransaction::book; 
                                       buys = new_buys; sells = new_sells}} in
     Some (t, "hit")
-  else if trader.orderbook.buys < 3 then 
+   else if trader.orderbook.buys < 3 then 
     if sell_value > avg_val && inv > 0 then
       let new_buys = trader.orderbook.buys in
       let new_sells = trader.orderbook.sells + 1 in 
@@ -263,7 +263,7 @@ let make_trade_stats trader transaction =
                                         buys = new_buys; sells = new_sells}} in
       Some (t, "hit")
     else None
-  else
+   else
     let trans_list = trader.orderbook.transactions in
     let list = get_bids trans_list in 
     let least_sr = Stats.last_three_lsr list in 
@@ -292,7 +292,7 @@ let make_trade_stats trader transaction =
                            orderbook = {transactions = newtransaction::book; 
                                         buys = new_buys; sells = new_sells}} in
       Some (t, "hit")
-    else None
+    else None *)
 
 
 

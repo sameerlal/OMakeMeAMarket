@@ -175,8 +175,11 @@ let play_game f =
   Unix.sleep 1;
   print_endline "\n";
   Gui.introduction_adv ();
-  ANSITerminal.print_string [ANSITerminal.green] (string_of_int (Stats.get_player_roll big_state.dice));
-  print_endline ("\n \n Let us begin... make your market:  ");
+  ANSITerminal.print_string [ANSITerminal.Blink; ANSITerminal.red] (Parse.show_dice (Stats.get_player_roll big_state.dice));
+  (* ANSITerminal.print_string [ANSITerminal.green] (string_of_int (Stats.get_player_roll big_state.dice)); *)
+  print_endline ("Other traders : ");
+  ANSITerminal.print_string [ANSITerminal.Blink; ANSITerminal.red] ((Parse.show_dice 0));
+  print_endline ("\n \n Let us begin... make your market on the sum of all dice:  ");
   cli fermi big_state
 
 let main () = 

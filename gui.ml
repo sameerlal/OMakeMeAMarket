@@ -105,8 +105,7 @@ let display_help unit =
       inventory  \n
       help \n
       cheat \n
-      tutorial \n
-  ");
+      tutorial\n");
   ()
 
 let introduction unit = 
@@ -124,7 +123,7 @@ let introduction_adv unit =
   ANSITerminal.print_string [ANSITerminal.black; ANSITerminal.green] ("You will be making a market for several traders in USD.  \n");
   ANSITerminal.print_string [ANSITerminal.black; ANSITerminal.green] ("You are competing with other high frequency trading firms, so be fast! \n");
   ANSITerminal.print_string [ANSITerminal.black; ANSITerminal.green] ("Type in 'help' for a list of commands or 'tutorial' to begin the tutorial \n" );
-  ANSITerminal.print_string [ANSITerminal.black; ANSITerminal.green] ("We will assume familiarity, so let us begin!");
+  ANSITerminal.print_string [ANSITerminal.black; ANSITerminal.green] ("We will assume familiarity, so let us begin! \n");
   display_help ();
   ANSITerminal.print_string [ANSITerminal.red] ("Simulating dice rolls....\n");
   ANSITerminal.print_string [ANSITerminal.red] ("Each trader has rolled a dice.\n");

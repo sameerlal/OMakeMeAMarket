@@ -1,6 +1,7 @@
 open Yojson.Basic.Util
 open String
 
+
 type situation = {
   event : string;
   effect : string;
@@ -40,8 +41,8 @@ let first_situation = {event = "Interest rates decrease"; effect = "+2%"}
 
 
 
-(**[situationofjson json] is a type situation with event and effect from the 
-   [json] file. *)
+(**[situationofjson json] stores into a record a situation with event and 
+   effect from the [json] file. *)
 let situationsofjson json = 
   {
     event = json |> member "event" |> to_string ;
@@ -61,12 +62,13 @@ let from_json json =
   {
     id = json |> member "id" |> to_string;
     fermi = json |> member "fermi" |> to_list |> List.map fermisofjson;
-    situations = json |> member "situation" |> to_list |> List.map situationsofjson;
+    situations = json |> member "situation" |> to_list |> 
+                 List.map situationsofjson;
     ascii = json |> member "ascii" |> to_string;
   }
 
-(* Obtain a question from json *)
-(**[get_intro data] results in the ascii string being printed from the json. *)
+(**[get_intro data] results in the ascii introduction string being printed from 
+   the json. *)
 let get_intro (data: t) =
   print_endline (data.ascii)
 
@@ -75,10 +77,12 @@ let get_intro (data: t) =
 let get_question_struct (data : t) = 
   List.nth data.fermi (int_of_string data.id)
 
+(** [get_question data] returns a question from the [data] variant *)
 let get_question (data:t) : string = 
   let fermi_struct = get_question_struct data in 
   fermi_struct.question
 
+(** [get_answer data] returns an answer from the [data] variant *)
 let get_answer (data : t) : string = 
   let fermi_struct = get_question_struct data in 
   fermi_struct.answer
@@ -104,7 +108,7 @@ let get_effect_from_situation (sit: situation) =
 
 
 
-
+(** [show_1] returns a string indicating a dice with visible face "1". *)
 let show_1 = 
   "
      _____________
@@ -118,7 +122,7 @@ let show_1 =
     |             |
     |_____________|
     "
-
+(** [show_2] returns a string indicating a dice with visible face "2". *)
 let show_2 = 
   "
      _____________
@@ -132,7 +136,7 @@ let show_2 =
     |           O |
     |_____________|
     "
-
+(** [show_3] returns a string indicating a dice with visible face "3". *)
 let show_3 = 
   "
      _____________
@@ -147,6 +151,7 @@ let show_3 =
     |_____________|
     "
 
+(** [show_4] returns a string indicating a dice with visible face "4". *)
 let show_4 = 
   "
      _____________
@@ -160,6 +165,8 @@ let show_4 =
     |             |
     |_____________|
     "
+
+(** [show_5] returns a string indicating a dice with visible face "5". *)
 let show_5 = 
   "
      _____________
@@ -173,6 +180,7 @@ let show_5 =
     |   O     O   |
     |_____________|
     "
+(** [show_6] returns a string indicating a dice with visible face "6". *)
 let show_6 = 
   "
      _____________
@@ -186,7 +194,7 @@ let show_6 =
     |             |
     |_____________|
     "
-
+(** [show_0] returns a string indicating a dice with visible face "?". *)
 let show_0 = 
   "
      __________        __________           __________ 
@@ -197,7 +205,7 @@ let show_0 =
     |          |      |          |         |          |
     |__________|      |__________|         |__________|
     "
-
+(** [show_dice n] returns a string indicating a dice with visible face [n]. *)
 let show_dice (n:int) : string = 
   match n with
   | 0 -> show_0

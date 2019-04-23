@@ -37,16 +37,13 @@ type trader_players = {
   ai2 : t;
 }
 
-(**ADD DOCS *)
-let change_true_value (trader:t) (adj_percentage:int) (down_or_up:bool) =
-  failwith "Unimplemented"
 
-
-
-(**[init_trader unit] is an initial trader of type t. *)
+(**[init_trader hidden identifier] initalizes a trader record with hidden number 
+   [hidden] and id equal to [identifier] *)
 let init_trader hidden identifier =
-  {id = identifier; hidden_number = hidden; avg_buy_value = 0; profit = 0; cash = 1000000; inventory = 0; 
-   orderbook = {transactions = []; buys = 0; sells = 0}}
+  {id = identifier; hidden_number = hidden; avg_buy_value = 0; profit = 0; 
+   cash = 1000000; inventory = 0; orderbook = 
+                                    {transactions = []; buys = 0; sells = 0}}
 
 
 (**[get_curr_profit cash init_cash msell_price inventory] is the current 
@@ -54,14 +51,16 @@ let init_trader hidden identifier =
 let get_curr_profit cash ?(init_cash = 1000000) msell_price inventory =
   inventory * msell_price + cash - init_cash
 
-(**[make_bidask bid ask] is a type bidask that takes in a bid and ask value. *)
+(**[make_bidask bid ask] returns a type bidask with respective record values 
+   equal to [bid] and [ask]. *)
 let make_bidask bid ask =
   {
     bid = bid;
     ask = ask;
     spread = ask - bid;
   }
-(**[make_transaction timestamp bid ask order_type] is a type transaction that takes in a [timestamp], [order_type] and a [bid] and [ask]. *)
+(**[make_transaction timestamp bid ask order_type] returns a variant transaction
+   that takes in a [timestamp], [order_type] and a [bid] and [ask]. *)
 let make_transaction timestamp bid ask order_type =
   {
     timestamp = timestamp;
@@ -76,9 +75,21 @@ let get_bids trans_lst =
      | h::t -> h.bidask.bid::list *)
   List.map (fun x -> x.bidask.bid ) trans_lst
 
-(**[make_sell trader transaction] is an option either of Some new type t trader (or the old 
-   trader depending on whether the trader will accept the marketmaker's bid 
-   for the security) or None which indicates whether trade was accepted. *)
+(**[make_sell trader transaction] is an option either of Some new type t trader 
+   (or the old trader depending on whether the trader will accept the 
+   marketmaker's bid for the security) or None which indicates whether trade 
+   was accepted.
+
+   AI Description:
+   This is one AI choice where the trader will trade according to the trader's 
+   current positions.  We describe the trader to be "flaky" as the trader does
+   not want to hold excess shares, but still wants to participate in trades. 
+   The trader will sell shares after accumulating a certain amount and will
+   buy shares if deficient.   In addition, the trader will purchase shares if
+   the current offer is less than the average holding.
+
+   This AI is meant to mimic a trader with small starting capital.
+*)
 let make_trade trader transaction =
   let sell_value = transaction.bidask.bid in
   let buy_value = transaction.bidask.ask in
@@ -133,11 +144,28 @@ let make_trade trader transaction =
 
 
 
-(* Buy/Sell according to precalculated expected value *)
+(** [make_trade_dumb trader transaction] is an option either of Some new type 
+    t trader (or the old trader depending on whether the trader will accept the 
+    marketmaker's bid for the security) or None which indicates whether trade 
+    was accepted.
+
+    AI Description:
+    [make_trader_dumb] is described as "dumb" because the trader does not keep
+    track of its holdings.  It looks at its hidden number and calculates the
+    expected value of the sum of all remaining dice. It then transacts according
+    to this calculated expected value, without keeping track of its holdings.
+
+    This is meant to simulate a perfect trader who only trades according to EV.
+*)
 let make_trade_dumb (trader:t) (transaction:transaction) = 
-  if float_of_int transaction.bidask.bid > (float_of_int num_opponents)*.3.5 +. (float_of_int trader.hidden_number) then 
+  if float_of_int transaction.bidask.bid > 
+     (float_of_int num_opponents)*.3.5 +. (float_of_int trader.hidden_number) 
+  then 
     Some(trader, "hit")
-  else if float_of_int transaction.bidask.ask < (float_of_int num_opponents)*.3.5 +. (float_of_int trader.hidden_number) then
+  else if float_of_int transaction.bidask.ask < 
+          (float_of_int num_opponents)*.3.5 +. 
+          (float_of_int trader.hidden_number) 
+  then
     Some (trader, "lift")
   else
     None
@@ -145,13 +173,21 @@ let make_trade_dumb (trader:t) (transaction:transaction) =
 
 
 
-(**[make_trade_dumb2 t transaction] is an option of None or Some pair of dummy 
-   type t [trader] and a string denoting whether the trader will lift or hit. *)
-let make_trade_dumb2 (trader:t) (transaction:transaction) = 
+(**[make_trade_optimist t transaction] is an option of None or Some pair of dummy 
+   type t [trader] and a string denoting whether the trader will lift or hit. 
+
+   AI Description:
+   [make_trade_optimist] calculates its EV by assuming that all other players
+   have the same dice as what the trader rolled.  It will only trade on 
+   tight spreads, because it assumes that the market maker is perfect.
+
+   This is meant to simulate an optimist trader who "goes with the hype".
+*)
+let make_trade_optimist (trader:t) (transaction:transaction) = 
   let time = Random.int 2 in 
   let seed = (time) mod 2 in 
-  if (abs (transaction.bidask.ask - trader.hidden_number) < 10) &&
-     (abs (transaction.bidask.bid - trader.hidden_number) < 10 ) then
+  if (abs (transaction.bidask.ask - trader.hidden_number*4) < 10) &&
+     (abs (transaction.bidask.bid - trader.hidden_number*4) < 10 ) then
     match seed with
     | 0 -> Some (trader, "hit")
     | 1 -> Some (trader, "lift")
@@ -162,6 +198,18 @@ let make_trade_dumb2 (trader:t) (transaction:transaction) =
   then Some (trader, "hit")
   else None
 
+
+(**  [make_trade_weary trader transaction] is an option of None or Some pair of 
+     dummy type t [trader] and a string denoting whether the trader will lift or 
+     hit.
+
+     AI Description:
+     [make_trade_weary] trades cautiously.  It keeps tracks of previous trades
+     and factors in its current inventory, only playing in low volatility 
+     environments. 
+
+     This is meant to simulate a cautious, risk adverse trader.
+*)
 let make_trade_weary trader transaction =
   let sell_value = transaction.bidask.bid in
   let buy_value = transaction.bidask.ask in
@@ -211,6 +259,7 @@ let make_trade_weary trader transaction =
     Some (t, "hit")
   else None
 
+(* TODO: Fix this so it doesn't have circular dependencies.  *)
 (*
 let make_trade_stats trader transaction =
   let sell_value = transaction.bidask.bid in
@@ -298,18 +347,28 @@ let get_final_profit trader =
   trader.profit + (trader.inventory * trader.hidden_number)
 
 
-
+(** [make_trade_ai0 trader transaction] returns the trade outcome
+    for the AI #0 trader, [trader], with trade [transaction]. *)
 let make_trade_ai0 (trader:t) (transaction:transaction) = 
   make_trade_dumb trader transaction
 
+(** [make_trade_ai1 trader transaction] returns the trade outcome
+    for the AI #1 trader, [trader], with trade [transaction]. *)
 let make_trade_ai1 (trader:t) (transaction:transaction) = 
   make_trade_dumb trader transaction
 
+(** [make_trade_ai2 trader transaction] returns the trade outcome
+    for the AI #2 trader, [trader], with trade [transaction]. *)
 let make_trade_ai2 (trader:t) (transaction:transaction) = 
   make_trade_dumb trader transaction
 
 
-(* Need to figure out who gets the trade, this should return an identifier also*)
+
+(** [contention_for_trade traders_data trans] will return an option indicating a 
+    single transaction, indicating the outcome for the market maker's bid/ask.  It
+    randomly choses a trader from all traders who are willing to transact.
+    If no traders want to transact, it returns None. 
+*)
 let contention_for_trade (traders_data : trader_players) (trans :transaction) = 
   let response1 = make_trade_ai0 traders_data.simple_ai trans in 
   let response2 = make_trade_ai1 traders_data.ai1 trans in 

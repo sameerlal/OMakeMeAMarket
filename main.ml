@@ -11,12 +11,15 @@ open Command
 open Parse
 open Gui
 
+(**  [opponents] denotes the number of opposing traders. *)
 let opponents = 3
 
 exception UnknownFile
 
 type trader_players = Trader.trader_players
 
+(** [big_state] record holds the states of the market maker,
+    other traders and information regarding the dice roll. *)
 type big_state = {
   mmstate : Marketmaker.t;
   traders : trader_players;
@@ -32,7 +35,9 @@ let init_trader_players (rolls:int list) : trader_players =
   }  
 
 
-(**[parse_user_input state] is the parsing of the user's input commands. *)
+(**[parse_user_input state] parses the user's input and returns a Command variant
+   classifying the response. If the user does not input anything or inputs a malformed
+   input, it will reprompt the user to answer until the user has provided correct input. *)
 let rec parse_user_input state = 
   print_endline "\n \n Make a market:   \n";
   print_string "> ";
@@ -44,6 +49,8 @@ let rec parse_user_input state =
       | Command.Malformed -> print_endline "Error in command."; parse_user_input state  
     end
 
+(**  [cycle_traders bstate] returns unit and is used to print out the hidden numbers of
+     traders and the sum (intrinsic value).  This is only used in debug mode.  *)
 let cycle_traders (bstate:big_state) : unit = 
   let tr = bstate.traders in
   print_endline "hidden numbers; ";
@@ -57,7 +64,11 @@ let cycle_traders (bstate:big_state) : unit =
 
 
 (**[fsm fermi state] is the looping fsm that keeps the game playing based on the 
-   commands put in by the user. *)
+   commands put in by the user.  It takes in [state] and then returns a new state
+   according to a transaction that occurs.  In the case that no transaction occurs,
+   it increments the timestep and returns the old state. 
+    It will throw errors with descriptions if unintended behavior occurs (for debug mode).
+*)
 let fsm fermi (state: big_state) = 
   let user_command = parse_user_input state in 
   if (Marketmaker.get_timestamp state.mmstate) = 69 then 
@@ -127,14 +138,19 @@ let fsm fermi (state: big_state) =
           end
           in 
           match response with
-          | "lift" -> print_endline ("Trader " ^ new_trader_state.id ^ " bought a CamlCoin (lifted your offer)"); new_state
-          | "hit" -> print_endline ("Trader " ^ new_trader_state.id ^ " sold a CamlCoin (hit your bid)"); new_state
+          | "lift" -> print_endline ("Trader " ^ new_trader_state.id ^ 
+                                     " bought a CamlCoin (lifted your offer)"); new_state
+          | "hit" -> print_endline ("Trader " ^ new_trader_state.id ^ 
+                                    " sold a CamlCoin (hit your bid)"); new_state
           | _ -> print_endline "error in trader's make trade"; exit 2
       end
 
 
 
-(**[cli fermi big_state] results in the printing of the statistics for a player at every command input and initializes the game. *)
+(**[cli fermi big_state] will pretty-print the market maker's state as it appears in
+   [big_state] as well as print information from the [fermi] json file that is relevant
+   to the game.  [cli] is recursive in nature and is hardcoded to stop the game after
+   ten increments.  This number can be varied without affect other parts of the game. *)
 let rec cli fermi big_state = 
   ANSITerminal.(print_string [blue]
                   "------------------- Statistics ------------------- \n");
@@ -156,8 +172,10 @@ let rec cli fermi big_state =
   | _ ->  cli fermi (fsm fermi big_state )
 
 
-(**[init_big_state true_value] is an initial big_state with the true value of the security. *)
-let init_big_state true_value = 
+(**[init_big_state true_value] returns an initial big_state with all record fields
+   initialized, where [num_opponents] denotes the number of opposing traders.  While 
+   this is not used in computation, it is included for debug help. *)
+let init_big_state num_opponents = 
   let dice_state = Stats.mega_roll opponents in
   {
     mmstate =  Marketmaker.init_market "init";
@@ -166,22 +184,26 @@ let init_big_state true_value =
   }
 
 
+(** [play_game f] initiates the start of the game described by json file [f].  It outputs
+    a description of the starting game state as well as a nice visual for the dice roll. *)
 let play_game f =
   let obtained_json = Yojson.Basic.from_file f in
   let fermi = Parse.from_json obtained_json in
   let big_state = init_big_state opponents in 
   ANSITerminal.erase Above;
   Parse.get_intro fermi;
-  Unix.sleep 1;
+  Unix.sleep 3;
   print_endline "\n";
   Gui.introduction_adv ();
-  ANSITerminal.print_string [ANSITerminal.Blink; ANSITerminal.red] (Parse.show_dice (Stats.get_player_roll big_state.dice));
-  (* ANSITerminal.print_string [ANSITerminal.green] (string_of_int (Stats.get_player_roll big_state.dice)); *)
+  ANSITerminal.print_string [ANSITerminal.Blink; ANSITerminal.red] 
+    (Parse.show_dice (Stats.get_player_roll big_state.dice));
   print_endline ("Other traders : ");
-  ANSITerminal.print_string [ANSITerminal.Blink; ANSITerminal.red] ((Parse.show_dice 0));
+  ANSITerminal.print_string [ANSITerminal.red] ((Parse.show_dice 0));
   print_endline ("\n \n Let us begin... make your market on the sum of all dice:  ");
   cli fermi big_state
 
+(**  [main] initiates the [play_game] function and prints a preamble introdution describing the game.
+     It pulls data from the "fermi.json" file before it calls [play_game]. *)
 let main () = 
   Gui.preamble ();
   play_game "fermi.json"
@@ -190,6 +212,8 @@ let main () =
    | exception End_of_file -> ()
    | file_name -> play_game file_name *)
 
+(**  Initiates the game with random seed chosen for demonstration purposes. *)
 let () = 
   Random.init 70;
+  ANSITerminal.resize 150 240;
   main ()

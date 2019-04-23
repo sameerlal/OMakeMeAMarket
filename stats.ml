@@ -212,12 +212,14 @@ let trade_freq market trader =
   let prnt = ["hits = "^(string_of_int hits); "lifts = "^(string_of_int lifts)] 
   in List.iter print_string prnt
 
-let chebyshevs_var var mean =
+let chebyshevs_var var =
+  match var with
+  |0. -> 0.
+  |_ -> 1. -. (1. -. (1./.(sqrt var)))
+
+let markhov_var a x =
   failwith ""
 
-let markhov_var var mean =
-  failwith ""
-
-let matr_mul lst =
+let matr_mul mtr lst =
   failwith ""
 

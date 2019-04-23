@@ -103,6 +103,7 @@ let display_help unit =
   ANSITerminal.print_string [ANSITerminal.red; ANSITerminal.yellow] ("
       get [bid] [ask] \n
       inventory  \n
+      history \n
       help \n
       cheat \n
       tutorial\n");

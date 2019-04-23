@@ -23,8 +23,6 @@ type t = {
   orderbook: orderbook
 }
 
-(* Trade variant.  To be sent to engine *)
-
 type send_market = {
   timestamp : int;
   transaction: bidask;
@@ -36,7 +34,8 @@ type receive_transaction =  {
   transaction : bidask;
 }
 
-(**[generate_receive_transaction timestamp trade_type bid ask] is a type transaction with the given arguments. *)
+(**[generate_receive_transaction timestamp trade_type bid ask] returns a 
+   transaction variant with the given arguments. *)
 let generate_receive_transaction timestamp trade_type bid ask =
   {
     timestamp = timestamp;
@@ -50,7 +49,8 @@ let generate_receive_transaction timestamp trade_type bid ask =
   }
 
 (**[init_market game] is the initial state of the market after a [game] is 
-   started. *)
+   started. It initializes all fields to its starting values and marks
+   the "trade_type" field in the record as "init".  *)
 let init_market game : t =
   {
     currbidask = {
@@ -70,7 +70,16 @@ let init_market game : t =
 type result = Legal of t | Illegal
 
 (**[display_data state] is a unit with side-effects of displaying data about 
-   transactions and the currents status of the player and market. *)
+   transactions and the currents status of the player and market. 
+
+   This uses ANSITerminal to pretty-print the market maker's statistics.
+   It currently includes the following data:
+   - Current Bid/Ask
+   - Spread
+   - Timestamp
+   - Current Profit
+   - # Coins accumulated
+*)
 let display_data (state : t) = 
   ANSITerminal.(print_string [red]
                   "\n\n ------------------- Market Maker Statistics ------------------- \n");
@@ -134,7 +143,8 @@ let exchange_mm_excess (market : t) (sum_dice : int) =
     }
   }
 
-(**[increment_timestep market] is a type t [market] with the timestamp incremented. *)
+(**[increment_timestep market] is a type t [market] with the timestamp 
+   incremented. *)
 let increment_timestep (market : t) =
   {market with 
    timestamp = market.timestamp + 1
@@ -145,30 +155,42 @@ let increment_timestep (market : t) =
 let send_market market =
   failwith "Unimplemented"
 
+(**  [get_profit market] returns the profit of the market maker's state 
+     [market]. *)
 let get_profit market =
   market.curr_profit
 
+(**  [get_outstandingshares market] returns the outstanding shares of the 
+     market maker's state [market]. *)
 let get_outstandingshares market =
   market.orderbook.outstanding_shares
 
+(**  [get_orderbook market] returns the orderbook variant of the market
+     maker's state [market]. *)
 let get_orderbook (market : t) =
   market.orderbook
 
+(**  [stringify_bidask_history market] returns a history of past market markets
+     as seen in [market] state.  *)
 let stringify_bidask_history (market : t) =
-  ANSITerminal.print_string [ANSITerminal.blue; ANSITerminal.cyan] " ----------------- HISTORY ------------------ \n";
+  ANSITerminal.print_string [ANSITerminal.blue; ANSITerminal.cyan] 
+    " ----------------- HISTORY ------------------ \n";
   let rec ba_helper (ls : bidask list) = 
     match ls with
     | [] -> ()
     | h::t -> 
       ANSITerminal.print_string [ANSITerminal.blue; ANSITerminal.yellow] 
-        (h.trade_type ^ " " ^ (string_of_int h.bid) ^ "@" ^ (string_of_int h.ask) ^ " with spread " ^ (string_of_int h.spread) ^ "\n"); 
+        (h.trade_type ^ " " ^ (string_of_int h.bid) ^ "@" 
+         ^ (string_of_int h.ask) ^ " with spread " ^
+         (string_of_int h.spread) ^ "\n"); 
       ba_helper t
 
   in ba_helper (market.bid_ask_history)
 
 (**[stringify_bid_ask market] is a string of the current bid and ask. *)
 let stringify_bid_ask (market : t) =
-  (string_of_int market.currbidask.bid) ^ "@" ^ (string_of_int market.currbidask.ask)
+  (string_of_int market.currbidask.bid) ^ "@" ^ 
+  (string_of_int market.currbidask.ask)
 
 let get_timestamp (market : t) = 
   market.timestamp

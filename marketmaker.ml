@@ -83,15 +83,17 @@ let display_data (state : t) =
   print_endline ("# Coins Accumulated: " ^ (string_of_int state.orderbook.outstanding_shares));
   ANSITerminal.(print_string [green] "\n \n ---------------------------------------------------------\n " )
 
-let calculate_new_profit (transaction:receive_transaction) market : t =
-  failwith "Unimplemented"
 
 (**[readjust_spread transaction market] is a market with the updated spread for the 
    marketmaker after a bidask change. It has the new bid-offer pair after the 
    marketmaker has finished a trade for the security at a certain price. The 
    goal of readjustment is to prevent hacks and hopefully be above scratch. It 
    takes in a new [bid] and [ask] price set by the player and the current 
-   [market] of type t.*)
+   [market] of type t.
+
+   For now, we are not implementing this as we have included this functionality in a 
+   different function for cleaner code.
+*)
 let readjust_spread (transaction:receive_transaction) (market:t) : t =
   failwith "Unimplemented"
 
@@ -117,6 +119,18 @@ let transaction (transaction:receive_transaction) (market:t) =
     orderbook = {
       outstanding_shares = market.orderbook.outstanding_shares 
                            + (if transaction.trade_type = "hit" then 1 else -1 );
+    }
+  }
+
+(** [exchange_mm_excess market sum_dice] will return a new market.t object with excess/deficient shares of camlcoin 
+    swapped for cash in accordance with the true market value, [sum_dice].  The final excess coins will be 0 (invariant).  *)
+let exchange_mm_excess (market : t) (sum_dice : int) = 
+  let excess = market.orderbook.outstanding_shares in 
+  {
+    market with 
+    curr_profit = market.curr_profit + (excess*sum_dice);
+    orderbook = {
+      outstanding_shares = 0;
     }
   }
 

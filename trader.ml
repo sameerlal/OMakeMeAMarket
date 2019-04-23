@@ -44,8 +44,8 @@ let change_true_value (trader:t) (adj_percentage:int) (down_or_up:bool) =
 
 
 (**[init_trader unit] is an initial trader of type t. *)
-let init_trader true_value identifier =
-  {id = identifier; hidden_number = true_value; avg_buy_value = 0; profit = 0; cash = 1000000; inventory = 0; 
+let init_trader hidden identifier =
+  {id = identifier; hidden_number = hidden; avg_buy_value = 0; profit = 0; cash = 1000000; inventory = 0; 
    orderbook = {transactions = []; buys = 0; sells = 0}}
 
 
@@ -211,13 +211,14 @@ let make_trade_weary trader transaction =
     Some (t, "hit")
   else None
 
-(* let make_trade_stats trader transaction =
-   let sell_value = transaction.bidask.bid in
-   let buy_value = transaction.bidask.ask in
-   let inv = trader.inventory in 
-   let book = trader.orderbook.transactions in
-   let avg_val = trader.avg_buy_value in
-   if trader.orderbook.buys = 0 then
+(*
+let make_trade_stats trader transaction =
+  let sell_value = transaction.bidask.bid in
+  let buy_value = transaction.bidask.ask in
+  let inv = trader.inventory in 
+  let book = trader.orderbook.transactions in
+  let avg_val = trader.avg_buy_value in
+  if trader.orderbook.buys = 0 then
     let new_buys = trader.orderbook.buys + 1 in
     let new_sells = trader.orderbook.sells in 
     let new_cash = trader.cash - buy_value in
@@ -231,7 +232,7 @@ let make_trade_weary trader transaction =
                          orderbook = {transactions = newtransaction::book; 
                                       buys = new_buys; sells = new_sells}} in
     Some (t, "hit")
-   else if trader.orderbook.buys < 3 then 
+  else if trader.orderbook.buys < 3 then 
     if sell_value > avg_val && inv > 0 then
       let new_buys = trader.orderbook.buys in
       let new_sells = trader.orderbook.sells + 1 in 
@@ -258,7 +259,7 @@ let make_trade_weary trader transaction =
                                         buys = new_buys; sells = new_sells}} in
       Some (t, "hit")
     else None
-   else
+  else
     let trans_list = trader.orderbook.transactions in
     let list = get_bids trans_list in 
     let least_sr = Stats.last_three_lsr list in 
@@ -298,10 +299,10 @@ let get_final_profit trader =
 
 
 
-let make_trade_ai1 (trader:t) (transaction:transaction) = 
+let make_trade_ai0 (trader:t) (transaction:transaction) = 
   make_trade_dumb trader transaction
 
-let make_trade_ai2 (trader:t) (transaction:transaction) = 
+let make_trade_ai1 (trader:t) (transaction:transaction) = 
   make_trade_dumb trader transaction
 
 let make_trade_ai2 (trader:t) (transaction:transaction) = 
@@ -310,10 +311,11 @@ let make_trade_ai2 (trader:t) (transaction:transaction) =
 
 (* Need to figure out who gets the trade, this should return an identifier also*)
 let contention_for_trade (traders_data : trader_players) (trans :transaction) = 
-  let response1 = make_trade_ai1 traders_data.simple_ai trans in 
-  let response2 = make_trade_ai2 traders_data.ai1 trans in 
+  let response1 = make_trade_ai0 traders_data.simple_ai trans in 
+  let response2 = make_trade_ai1 traders_data.ai1 trans in 
   let response3 = make_trade_ai2 traders_data.ai2 trans in 
-  let agg = response1::response2::response3::[] in 
+  let agg = response1::response2::response3::[] in
+  (* print_string (string_of_int (List.length agg)); *)
   let candidates = List.filter (
       fun x -> match x with
         | None -> false

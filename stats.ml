@@ -173,27 +173,27 @@ let text_capture (market : Marketmaker.t) =
 
 (**[linear_reg_cheat market] is the linear regression of the bids or asks in 
    the market based on what the market has seen more of.  *)
-let linear_reg_cheat (market : Marketmaker.t ) = 
+let linear_reg_cheat (market : Marketmaker.t ) (dice:dice_data)= 
   let bid_list = (bid_acc (market.bid_ask_history) []) in
   let ask_list = (ask_acc (market.bid_ask_history) []) in
   if List.length bid_list > List.length ask_list  then
     (* Linear regression for asks *)
     if List.length ask_list < 3 then
       -1.0  else 
-      abs_float (125.0 -. (last_three_lsr 
-                             ((List.nth ask_list 
-                                 (List.length ask_list - 3))::(List.nth ask_list 
-                                                                 (List.length ask_list - 2))::(List.nth ask_list 
-                                                                                                 (List.length ask_list - 1))::[])  ))
+      abs_float ((float_of_int dice.sum_rolls) -. 
+                 (last_three_lsr ((List.nth ask_list 
+                                     (List.length ask_list - 3))::(List.nth ask_list 
+                                                                     (List.length ask_list - 2))::(List.nth ask_list 
+                                                                                                     (List.length ask_list - 1))::[])  ))
   else 
     (*  Linear regression for bids*)
   if List.length bid_list < 3 then
     -1.0  else 
-    abs_float (125.0 -. (last_three_lsr 
-                           ((List.nth bid_list 
-                               (List.length ask_list - 3))::(List.nth bid_list 
-                                                               (List.length ask_list - 2))::(List.nth bid_list 
-                                                                                               (List.length ask_list - 1))::[])  ))
+    abs_float ((float_of_int dice.sum_rolls) -. (last_three_lsr 
+                                                   ((List.nth bid_list 
+                                                       (List.length ask_list - 3))::(List.nth bid_list 
+                                                                                       (List.length ask_list - 2))::(List.nth bid_list 
+                                                                                                                       (List.length ask_list - 1))::[])  ))
 
 (**[count lst str acc] is the frequency of occurrence of [str] in [lst]. *)
 let rec count lst str acc =

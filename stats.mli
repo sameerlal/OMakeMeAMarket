@@ -28,4 +28,4 @@ val last_three_lsr : int list -> float
 val get_graph : Marketmaker.t -> Trader.t -> graph_data 
 val text_capture : Marketmaker.t -> unit
 val linear_reg_cheat : Marketmaker.t -> dice_data -> float
-val chebyshevs_var : float -> float
+val chebyshev_like_var : float -> float

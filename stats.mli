@@ -1,4 +1,6 @@
-type graph_data = {bid_data : int list; ask_data : int list; trade_data : string list; time_data : int list; hidden_number : int}
+type graph_data = {bid_data : int list; ask_data : int list; 
+                   trade_data : string list; time_data : int list; 
+                   hidden_number : int}
 
 type dice_data = {
   player_roll : int;

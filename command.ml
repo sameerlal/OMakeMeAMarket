@@ -29,9 +29,12 @@ let parse str =
           | [] -> []
           | h::t -> t end
         in (Set obj) else raise Malformed
-    | "inventory" -> if List.length filtered = 1 then Inventory else raise Malformed
-    | "history" -> if List.length filtered = 1 then History else raise Malformed
-    | "quit" -> if List.length filtered = 1 then Quit else raise Malformed
+    | "inventory" -> if List.length filtered = 1 then Inventory 
+      else raise Malformed
+    | "history" -> if List.length filtered = 1 then History 
+      else raise Malformed
+    | "quit" -> if List.length filtered = 1 then Quit 
+      else raise Malformed
     | "tutorial" -> Tutorial
     | "help" -> Help
     | "cheat" -> Cheat

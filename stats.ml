@@ -41,7 +41,8 @@ let mega_roll (num_opp:int) : dice_data =
   {
     player_roll = playroll;
     other_rolls = other_list;
-    sum_rolls = (playroll + (List.fold_left (fun acc h -> acc + h) 0 other_list) );
+    sum_rolls = (playroll + (List.fold_left (fun acc h -> acc + h) 0 other_list) 
+                );
   }
 
 (* END DICE *)
@@ -182,18 +183,22 @@ let linear_reg_cheat (market : Marketmaker.t ) =
       -1.0  else 
       abs_float (125.0 -. (last_three_lsr 
                              ((List.nth ask_list 
-                                 (List.length ask_list - 3))::(List.nth ask_list 
-                                                                 (List.length ask_list - 2))::(List.nth ask_list 
-                                                                                                 (List.length ask_list - 1))::[])  ))
+                                 (List.length ask_list - 3))
+                              ::(List.nth ask_list 
+                                   (List.length ask_list - 2))
+                              ::(List.nth ask_list 
+                                   (List.length ask_list - 1))::[])  ))
   else 
     (*  Linear regression for bids*)
   if List.length bid_list < 3 then
     -1.0  else 
     abs_float (125.0 -. (last_three_lsr 
                            ((List.nth bid_list 
-                               (List.length ask_list - 3))::(List.nth bid_list 
-                                                               (List.length ask_list - 2))::(List.nth bid_list 
-                                                                                               (List.length ask_list - 1))::[])  ))
+                               (List.length ask_list - 3))
+                            ::(List.nth bid_list 
+                                 (List.length ask_list - 2))
+                            ::(List.nth bid_list 
+                                 (List.length ask_list - 1))::[])  ))
 
 (**[count lst str acc] is the frequency of occurrence of [str] in [lst]. *)
 let rec count lst str acc =

@@ -81,27 +81,33 @@ type result = Legal of t | Illegal
    - # Coins accumulated
 *)
 let display_data (state : t) = 
-  ANSITerminal.(print_string [red]
-                  "\n\n ------------------- Market Maker Statistics ------------------- \n");
+  ANSITerminal.(print_string 
+                  [red]
+                  "\n\n ------------------- Market Maker 
+                  Statistics ------------------- \n");
   print_string ("Current Bid/Ask : ");
   print_string (" | Bid: " ^ (string_of_int state.currbidask.bid));
   print_string (" | Ask: " ^ (string_of_int state.currbidask.ask));
   print_endline ("| Spread:  " ^ (string_of_int state.currbidask.spread));
   print_string (" Time Stamp:   " ^ (string_of_int state.timestamp));
   print_endline (" | Current Profit:  " ^ (string_of_int state.curr_profit));
-  print_endline ("# Coins Accumulated: " ^ (string_of_int state.orderbook.outstanding_shares));
-  ANSITerminal.(print_string [green] "\n \n ---------------------------------------------------------\n " )
+  print_endline ("# Coins Accumulated: " ^ 
+                 (string_of_int state.orderbook.outstanding_shares));
+  ANSITerminal.(print_string 
+                  [green] 
+                  "\n \n --------------------------
+                  -------------------------------\n " )
 
 
-(**[readjust_spread transaction market] is a market with the updated spread for the 
-   marketmaker after a bidask change. It has the new bid-offer pair after the 
-   marketmaker has finished a trade for the security at a certain price. The 
+(**[readjust_spread transaction market] is a market with the updated spread for 
+   the marketmaker after a bidask change. It has the new bid-offer pair after 
+   the marketmaker has finished a trade for the security at a certain price. The 
    goal of readjustment is to prevent hacks and hopefully be above scratch. It 
    takes in a new [bid] and [ask] price set by the player and the current 
    [market] of type t.
 
-   For now, we are not implementing this as we have included this functionality in a 
-   different function for cleaner code.
+   For now, we are not implementing this as we have included this functionality 
+   in a different function for cleaner code.
 *)
 let readjust_spread (transaction:receive_transaction) (market:t) : t =
   failwith "Unimplemented"
@@ -124,15 +130,20 @@ let transaction (transaction:receive_transaction) (market:t) =
     bid_ask_history = market.bid_ask_history @ [new_curr_bid_ask];
     timestamp = transaction.timestamp + 1;
     curr_profit = market.curr_profit + (if transaction.trade_type = "lift" 
-                                        then transaction.transaction.ask else -1*transaction.transaction.bid); (* TODO *)
+                                        then transaction.transaction.ask 
+                                        else -1*transaction.transaction.bid); 
+    (* TODO *)
     orderbook = {
       outstanding_shares = market.orderbook.outstanding_shares 
-                           + (if transaction.trade_type = "hit" then 1 else -1 );
+                           + 
+                           (if transaction.trade_type = "hit" then 1 else -1 );
     }
   }
 
-(** [exchange_mm_excess market sum_dice] will return a new market.t object with excess/deficient shares of camlcoin 
-    swapped for cash in accordance with the true market value, [sum_dice].  The final excess coins will be 0 (invariant).  *)
+(** [exchange_mm_excess market sum_dice] will return a new market.t object 
+    with excess/deficient shares of camlcoin swapped for cash in accordance 
+    with the true market value, [sum_dice].  The final excess coins will be 0 
+    (invariant).  *)
 let exchange_mm_excess (market : t) (sum_dice : int) = 
   let excess = market.orderbook.outstanding_shares in 
   {

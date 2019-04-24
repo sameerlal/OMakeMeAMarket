@@ -75,7 +75,7 @@ let get_bids trans_lst =
      | h::t -> h.bidask.bid::list *)
   List.map (fun x -> x.bidask.bid ) trans_lst
 
-(**[make_sell trader transaction] is an option either of Some new type t trader 
+(**[make_trade trader transaction] is an option either of Some new type t trader 
    (or the old trader depending on whether the trader will accept the 
    marketmaker's bid for the security) or None which indicates whether trade 
    was accepted.
@@ -173,8 +173,9 @@ let make_trade_dumb (trader:t) (transaction:transaction) =
 
 
 
-(**[make_trade_optimist t transaction] is an option of None or Some pair of dummy 
-   type t [trader] and a string denoting whether the trader will lift or hit. 
+(**[make_trade_optimist t transaction] is an option of None or Some pair of 
+   dummy type t [trader] and a string denoting whether the trader will lift or 
+   hit. 
 
    AI Description:
    [make_trade_optimist] calculates its EV by assuming that all other players
@@ -324,7 +325,8 @@ let make_trade_stats trader transaction =
                            orderbook = {transactions = newtransaction::book; 
                                         buys = new_buys; sells = new_sells}} in 
       Some (t, "lift")
-    else if (Pervasives.float buy_value) < least_sr && trader.cash > (buy_value * 2) then 
+    else if (Pervasives.float buy_value) < least_sr && trader.cash > 
+    (buy_value * 2) then 
       let new_buys = trader.orderbook.buys + 1 in
       let new_sells = trader.orderbook.sells in 
       let new_cash = trader.cash - buy_value in
@@ -365,8 +367,8 @@ let make_trade_ai2 (trader:t) (transaction:transaction) =
 
 
 (** [contention_for_trade traders_data trans] will return an option indicating a 
-    single transaction, indicating the outcome for the market maker's bid/ask.  It
-    randomly choses a trader from all traders who are willing to transact.
+    single transaction, indicating the outcome for the market maker's bid/ask. 
+    It randomly choses a trader from all traders who are willing to transact.
     If no traders want to transact, it returns None. 
 *)
 let contention_for_trade (traders_data : trader_players) (trans :transaction) = 

@@ -222,6 +222,8 @@ let trade_freq market trader =
   let prnt = ["hits = "^(string_of_int hits); "lifts = "^(string_of_int lifts)] 
   in List.iter print_string prnt
 
+(**[chebyshevs_var var] Uses the normal variance of a float list, and
+    calculates chebyshevs variance  *)
 let chebyshevs_var var =
   match var with
   |0. -> 0.

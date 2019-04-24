@@ -77,7 +77,8 @@ let make_last_three_lsr_test
     (name : string)
     (lst : int list)
     (expected_output : float ): test =
-  name >:: (fun _ -> assert_equal expected_output (floor (Stats.last_three_lsr lst))
+  name >:: 
+  (fun _ -> assert_equal expected_output (floor (Stats.last_three_lsr lst))
                ~printer: (pp_float))
 
 let last_three_lsr_tests = [
@@ -90,7 +91,8 @@ let make_get_graph_test
     (market : Marketmaker.t )
     (trader : Trader.t)
     (expected_output : graph_data ): test =
-  name >:: (fun _ -> assert_equal expected_output (Stats.get_graph market trader))
+  name >:: 
+  (fun _ -> assert_equal expected_output (Stats.get_graph market trader))
 
 
 let get_graph_tests = [
@@ -114,7 +116,8 @@ let make_linear_reg_cheat_test
     (market : Marketmaker.t )
     (dice : Stats.dice_data)
     (expected_output : float ): test =
-  name >:: (fun _ -> assert_equal expected_output (Stats.linear_reg_cheat market dice ))
+  name >:: (
+    fun _ -> assert_equal expected_output (Stats.linear_reg_cheat market dice ))
 
 
 let linear_reg_cheat_tests = [
@@ -125,7 +128,8 @@ let make_chebyshevs_var_test
     (name : string)
     (var : float)
     (expected_output : float ): test =
-  name >:: (fun _ -> assert_equal expected_output (floor (Stats.chebyshevs_var var))
+  name >:: 
+  (fun _ -> assert_equal expected_output (floor (Stats.chebyshevs_var var))
                ~printer: (pp_float))
 
 let chebyshevs_var_tests = [
@@ -173,11 +177,18 @@ let test1_transaction = {
   order_type = "lift"
 }
 let trader_tests = [
-  "init_trader" >:: (fun _ -> assert_equal ({id = "1"; hidden_number = 20; avg_buy_value = 0; profit = 0; cash = 1000000; inventory = 0; 
-                                             orderbook = {transactions = []; buys = 0; sells = 0}}) (init_trader 20 "1")) ;
-  "make_trade_test" >:: (fun _ -> assert_equal (None) (make_trade sample_trader sample_transaction));
-  "make_trade_dumb_test 1" >:: (fun _ -> assert_equal (None) (make_trade_dumb sample_trader sample_transaction));
-  "make_transaction test 1" >:: (fun _-> assert_equal test1_transaction (make_transaction 2 42 4242 "lift"))
+  "init_trader" >:: 
+  (fun _ -> assert_equal ({id = "1"; hidden_number = 20; 
+    avg_buy_value = 0; profit = 0; cash = 1000000; inventory = 0; 
+    orderbook = {transactions = []; buys = 0; sells = 0}}) 
+      (init_trader 20 "1")) ;
+  "make_trade_test" >:: 
+  (fun _ -> assert_equal (None) (make_trade sample_trader sample_transaction));
+  "make_trade_dumb_test 1" >:: 
+  (fun _ -> assert_equal (None) 
+    (make_trade_dumb sample_trader sample_transaction));
+  "make_transaction test 1" >:: 
+  (fun _-> assert_equal test1_transaction (make_transaction 2 42 4242 "lift"))
 ]
 (*Marketmaker's tests stuff*)
 let samplem_bidask = {
@@ -263,7 +274,9 @@ let make_get_question_test
     (name : string)
     (data : Parse.t )
     (expected_output : int ): test =
-  name >:: (fun _ -> assert_equal expected_output (Parse.get_question data |> String.length)
+  name >:: 
+  (fun _ -> assert_equal expected_output (
+    Parse.get_question data |> String.length)
   ~printer: pp_int)
 
 
@@ -296,8 +309,10 @@ let make_get_nth_situation_test
 
 
 let get_nth_situation_tests = [
-  make_get_nth_situation_test "get_nth_situation test 1: 0th" 0 fermi_json oth_situation;
-  make_get_nth_situation_test "get_nth_situation test 1: 1st" 1 fermi_json first_situation; 
+  make_get_nth_situation_test "get_nth_situation test 1: 0th" 
+  0 fermi_json oth_situation;
+  make_get_nth_situation_test "get_nth_situation test 1: 1st" 
+  1 fermi_json first_situation; 
 ]
 
 let make_get_event_from_situation_test
@@ -310,8 +325,10 @@ let make_get_event_from_situation_test
 
 
 let get_event_from_situation_tests = [
-  make_get_event_from_situation_test "get_event_from_situation test 1: 0th" oth_situation "Flash Crash, all stocks are down";
-  make_get_event_from_situation_test "get_event_from_situation test 1: 1st" first_situation "Interest rates decrease"; 
+  make_get_event_from_situation_test "get_event_from_situation test 1: 0th" 
+  oth_situation "Flash Crash, all stocks are down";
+  make_get_event_from_situation_test "get_event_from_situation test 1: 1st" 
+  first_situation "Interest rates decrease"; 
 ]
 
 let make_get_effect_from_situation_test
@@ -323,8 +340,10 @@ let make_get_effect_from_situation_test
 
 
 let get_effect_from_situation_tests = [
-  make_get_effect_from_situation_test "get_effect_from_situation test 1: 0th" oth_situation (Some ("decrease", "10%"));
-  make_get_effect_from_situation_test "get_effect_from_situation test 1: 1st" first_situation (Some ("increase", "2%")); 
+  make_get_effect_from_situation_test "get_effect_from_situation test 1: 0th" 
+  oth_situation (Some ("decrease", "10%"));
+  make_get_effect_from_situation_test "get_effect_from_situation test 1: 1st" 
+  first_situation (Some ("increase", "2%")); 
 ]
 
 let make_get_intro_test

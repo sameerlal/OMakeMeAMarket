@@ -7,6 +7,9 @@ open Marketmaker
   *    - Gaussian Statistics
   *    - Three point Linear Square Regression Model 
   *    - Newton-Raphson Method for Curve approximation (Secant estimate)
+  *    - Chebyschev Variance Probability Calculator
+  *    - Markov Chain analysis using three features
+  *
   *             DATA ANALYSIS
   *    - Mean spread, bids, asks, trade count
   *    - Max spread, bids, asks 

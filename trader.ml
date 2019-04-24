@@ -140,10 +140,6 @@ let make_trade trader transaction =
   else None
 
 
-
-
-
-
 (** [make_trade_dumb trader transaction] is an option either of Some new type 
     t trader (or the old trader depending on whether the trader will accept the 
     marketmaker's bid for the security) or None which indicates whether trade 

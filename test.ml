@@ -120,6 +120,20 @@ let make_linear_reg_cheat_test
 let linear_reg_cheat_tests = [
   (* make tests plz *)
 ]
+
+let make_chebyshevs_var_test
+    (name : string)
+    (var : float)
+    (expected_output : float ): test =
+  name >:: (fun _ -> assert_equal expected_output (floor (Stats.chebyshevs_var var))
+               ~printer: (pp_float))
+
+let chebyshevs_var_tests = [
+  make_chebyshevs_var_test "chebyshevs_var test 1: 0" 0. 0.;
+  make_chebyshevs_var_test "chebyshevs_var test 2: #" 42. 0.
+]
+
+
 (*Trader's tests stuff *)
 let sample_bidask = {
   bid = 10;
@@ -148,13 +162,23 @@ let sample_trader = {
   inventory = 2; (* Total number of shares owned *)
   orderbook = sample_orderbook;
 }
+let test1_bidask = {
+  bid = 42;
+  ask = 4242;
+  spread = 4200
+}
+let test1_transaction = {
+  timestamp = 2;
+  bidask = test1_bidask;
+  order_type = "lift"
+}
 let trader_tests = [
   "init_trader" >:: (fun _ -> assert_equal ({id = "1"; hidden_number = 20; avg_buy_value = 0; profit = 0; cash = 1000000; inventory = 0; 
                                              orderbook = {transactions = []; buys = 0; sells = 0}}) (init_trader 20 "1")) ;
   "make_trade_test" >:: (fun _ -> assert_equal (None) (make_trade sample_trader sample_transaction));
   "make_trade_dumb_test 1" >:: (fun _ -> assert_equal (None) (make_trade_dumb sample_trader sample_transaction));
+  "make_transaction test 1" >:: (fun _-> assert_equal test1_transaction (make_transaction 2 42 4242 "lift"))
 ]
-
 (*Marketmaker's tests stuff*)
 let samplem_bidask = {
   trade_type = "init";
@@ -234,18 +258,17 @@ let from_json_tests = [
 ]
 
 let pp_string x = x 
-
+let pp_int x = string_of_int x
 let make_get_question_test
     (name : string)
     (data : Parse.t )
-    (expected_output : string ): test =
-  name >:: (fun _ -> assert_equal expected_output (Parse.get_question data )
-               ~printer: pp_string)
+    (expected_output : int ): test =
+  name >:: (fun _ -> assert_equal expected_output (Parse.get_question data |> String.length)
+  ~printer: pp_int)
 
 
 let get_question_tests = [
-  make_get_question_test "get_question test 1: fermi" fermi_json 
-    "How many people in the world are talking on their cell phones in any given minute? (in millions)"
+  make_get_question_test "get_question test 1: fermi" fermi_json 109
 ]
 
 let make_get_answer_test

@@ -1,5 +1,10 @@
 (********************************************************************
    TESTING SUITE 
+
+   Individual Tests are organized as follows
+   - Normal Tests
+   - Smoke Tests
+   - Edge Cases
  ********************************************************************)
 open OUnit2
 open Yojson.Basic.Util

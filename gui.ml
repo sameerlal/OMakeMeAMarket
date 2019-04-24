@@ -101,7 +101,7 @@ let preamble unit =
 let display_help unit =
   ANSITerminal.print_string [ANSITerminal.red; ANSITerminal.blue] ("The list of possible commands are: ");
   ANSITerminal.print_string [ANSITerminal.red; ANSITerminal.yellow] ("
-      get [bid] [ask] \n
+      set [bid] [ask] \n
       inventory  \n
       history \n
       help \n

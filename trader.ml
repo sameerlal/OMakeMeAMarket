@@ -357,13 +357,12 @@ let make_trade_ai0 (trader:t) (transaction:transaction) =
 (** [make_trade_ai1 trader transaction] returns the trade outcome
     for the AI #1 trader, [trader], with trade [transaction]. *)
 let make_trade_ai1 (trader:t) (transaction:transaction) = 
-  make_trade_dumb trader transaction
+  make_trade_optimist trader transaction
 
 (** [make_trade_ai2 trader transaction] returns the trade outcome
     for the AI #2 trader, [trader], with trade [transaction]. *)
 let make_trade_ai2 (trader:t) (transaction:transaction) = 
-  make_trade_dumb trader transaction
-
+  make_trade_weary trader transaction
 
 
 (** [contention_for_trade traders_data trans] will return an option indicating a 

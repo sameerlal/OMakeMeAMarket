@@ -89,72 +89,75 @@ let fsm fermi (state: big_state) =
     | Command.Tutorial -> Gui.tutorial_preamble "start"; state
     | Command.Cheat -> 
       print_endline( (
-          if Stats.linear_reg_cheat state.mmstate
-             = infinity || Stats.linear_reg_cheat state.mmstate = -1.0
+          let resp = Stats.linear_reg_cheat state.mmstate state.dice in 
+          if resp = infinity || resp = -1.0
           then "No cheat available! "
           else 
-            string_of_float (Stats.linear_reg_cheat state.mmstate)
+            "According to our analysis, a good guess would be:  " ^ 
+            string_of_float (resp)
         ));
       state
     | Command.Set phr -> 
-      let bid = int_of_string (List.nth phr 0) in 
-      let ask = int_of_string (List.nth phr 1) in 
-      let trade_transaction = Trader.make_transaction 
-          (Marketmaker.get_timestamp state.mmstate) bid ask "blank" in
-      let trader_response = Trader.contention_for_trade state.traders 
-          trade_transaction in 
+      if (List.length phr <> 2) then state
+      else
+        let bid = int_of_string (List.nth phr 0) in 
+        let ask = int_of_string (List.nth phr 1) in 
+        let trade_transaction = Trader.make_transaction 
+            (Marketmaker.get_timestamp state.mmstate) bid ask "blank" in
+        let trader_response = Trader.contention_for_trade state.traders 
+            trade_transaction in 
 
-      begin
-        match trader_response with 
-        | None -> print_endline "No Trade occured"; 
-          {
-            state with 
-            mmstate = (Marketmaker.increment_timestep state.mmstate)
-          }
-        | Some (new_trader_state, response) -> 
-          let new_MM_state = Marketmaker.transaction 
-              (Marketmaker.generate_receive_transaction 
-                 (Marketmaker.get_timestamp state.mmstate) 
-                 response bid ask) state.mmstate in
+        begin
+          match trader_response with 
+          | None -> print_endline "No Trade occured"; 
+            {
+              state with 
+              mmstate = (Marketmaker.increment_timestep state.mmstate)
+            }
+          | Some (new_trader_state, response) -> 
+            let new_MM_state = Marketmaker.transaction 
+                (Marketmaker.generate_receive_transaction 
+                   (Marketmaker.get_timestamp state.mmstate) 
+                   response bid ask) state.mmstate in
 
-          let new_state = begin 
-            match (new_trader_state.id) with
-            | "1" -> {
-                mmstate = new_MM_state; 
-                traders = {
-                  state.traders with
-                  simple_ai = new_trader_state
-                };
-                dice = state.dice
-              }
-            | "2" -> {
-                mmstate = new_MM_state; 
-                traders = {
-                  state.traders with
-                  ai1 = new_trader_state
-                };
-                dice = state.dice
-              }
-            | "3" -> {
-                mmstate = new_MM_state; 
-                traders = {
-                  state.traders with
-                  ai2 = new_trader_state
-                };
-                dice = state.dice
-              }  
-            | _ -> failwith "trader range out of bounds"
-          end
-          in 
-          match response with
-          | "lift" -> print_endline ("Trader " ^ new_trader_state.id ^ 
-                                     " bought a CamlCoin (lifted your offer)"); 
-            new_state
-          | "hit" -> print_endline ("Trader " ^ new_trader_state.id ^ 
-                                    " sold a CamlCoin (hit your bid)"); 
-            new_state
-          | _ -> print_endline "error in trader's make trade"; exit 2
-      end
+            let new_state = begin 
+              match (new_trader_state.id) with
+              | "1" -> {
+                  mmstate = new_MM_state; 
+                  traders = {
+                    state.traders with
+                    simple_ai = new_trader_state
+                  };
+                  dice = state.dice
+                }
+              | "2" -> {
+                  mmstate = new_MM_state; 
+                  traders = {
+                    state.traders with
+                    ai1 = new_trader_state
+                  };
+                  dice = state.dice
+                }
+              | "3" -> {
+                  mmstate = new_MM_state; 
+                  traders = {
+                    state.traders with
+                    ai2 = new_trader_state
+                  };
+                  dice = state.dice
+                }  
+              | _ -> failwith "trader range out of bounds"
+            end
+            in 
+            match response with
+            | "lift" -> print_endline ("Trader "^ new_trader_state.id ^
+                                       " bought a CamlCoin (lifted your offer)")
+                      ; new_state
+            | "hit" -> print_endline ("Trader " ^ new_trader_state.id ^ 
+                                      " sold a CamlCoin (hit your bid)"); 
+              new_state
+            | _ -> print_endline "error in trader's make trade"; exit 2
+        end
 
 
 

@@ -112,8 +112,9 @@ let text_capture_tests = [
 let make_linear_reg_cheat_test
     (name : string)
     (market : Marketmaker.t )
+    (dice : Stats.dice_data)
     (expected_output : float ): test =
-  name >:: (fun _ -> assert_equal expected_output (Stats.linear_reg_cheat market ))
+  name >:: (fun _ -> assert_equal expected_output (Stats.linear_reg_cheat market dice ))
 
 
 let linear_reg_cheat_tests = [
@@ -139,7 +140,8 @@ let sample_orderbook = {
 }
 
 let sample_trader = {
-  true_value = 125;
+  id = "1";
+  hidden_number = 125;
   avg_buy_value = 0;
   profit = 0 ;
   cash = 200;
@@ -147,8 +149,8 @@ let sample_trader = {
   orderbook = sample_orderbook;
 }
 let trader_tests = [
-  "init_trader" >:: (fun _ -> assert_equal ({true_value = 20; avg_buy_value = 0; profit = 0; cash = 1000000; inventory = 0; 
-                                             orderbook = {transactions = []; buys = 0; sells = 0}}) (init_trader 20)) ;
+  "init_trader" >:: (fun _ -> assert_equal ({id = "1"; hidden_number = 20; avg_buy_value = 0; profit = 0; cash = 1000000; inventory = 0; 
+                                             orderbook = {transactions = []; buys = 0; sells = 0}}) (init_trader 20 "1")) ;
   "make_trade_test" >:: (fun _ -> assert_equal (None) (make_trade sample_trader sample_transaction));
   "make_trade_dumb_test 1" >:: (fun _ -> assert_equal (None) (make_trade_dumb sample_trader sample_transaction));
 ]

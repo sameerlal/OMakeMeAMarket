@@ -227,9 +227,23 @@ let chebyshevs_var var =
   |0. -> 0.
   |_ -> 1. -. (1. -. (1./.(sqrt var)))
 
-let markhov_var a x =
-  failwith ""
+(**[matr_helper row vector return] is the sum of the element-wise 
+   multiplications of [row] and [vector]. *)
+let rec matr_helper row vector return =
+  match row with
+  | [] -> return
+  | h::t -> matr_helper t (List.tl vector) h*(List.hd vector)+return
 
-let matr_mul mtr lst =
-  failwith ""
+(**[matr_mul mtr vector return] is the product of the matrices [mtr] which 
+   should be 3x3 and [vector] which should be 3x1. *)
+let rec matr_mul (mtr: int list list) (vector: int list) (return: int list) =
+  if List.length mtr <> 3 then failwith "mtr needs to be 3x3"
+  else if List.length vector <> 3 then failwith "vector needs to be 3x1"
+  else
+    match mtr with
+    | [] -> return
+    | h::t -> if List.length h <> 3 
+      then failwith "mtr needs to be 3x3"
+      else matr_mul t vector ((matr_helper h vector 0)::return)
+
 

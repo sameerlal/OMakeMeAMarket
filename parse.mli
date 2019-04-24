@@ -1,3 +1,10 @@
+(** Parse
+    Representation of the game's intro.
+
+    This module initializes the game by extracting from the relevant json file 
+    and providing the player with fermiquestions/diceroll. It parses the json 
+    and introduces the situations that can occur in the json.
+*)
 type t
 type situation = {
   event : string;

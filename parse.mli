@@ -16,7 +16,7 @@ val fermi_json : t
 val oth_situation : situation
 val first_situation : situation
 (* END *)
-val from_json : Yojson.Basic.json -> t
+val from_json : Yojson.Basic.t -> t
 val get_question : t -> string
 val get_answer : t -> string
 val get_nth_situation : int -> t -> situation

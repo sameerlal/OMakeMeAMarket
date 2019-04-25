@@ -1,19 +1,19 @@
 open Yojson.Basic.Util
 open String
 
-
+(*Holds the situations from the json with the effect that each event causes.*)
 type situation = {
   event : string;
   effect : string;
 }
 
-
+(*Holds the fermi questions and their answers from the json. *)
 type fermiquestions = 
   {question : string;
    answer : string;
   }
 
-
+(*Holds information for the introduction portion of the game. *)
 type t = {
   id: string;
   fermi : fermiquestions list;

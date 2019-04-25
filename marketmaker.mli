@@ -1,4 +1,11 @@
+(** Marketmaker
+    Representation of the marketmaker - player - during the course of the game.
 
+    This module keeps track of the marketmaker's bid/ask prices and the 
+    transactions that take place between the player and traders. It contains 
+    structs to hold this data and has functions to implement changes to and 
+    display the data.
+*)
 (** The abstract type of values representing adventures. *)
 type bidask = {
   trade_type : string;
@@ -22,12 +29,13 @@ type t = {
 }
 
 (* Trade variant.  To be sent to engine *)
-
 type send_market = {
   timestamp : int;
   transaction: bidask;
 }
 
+(* The transaction type. Holds information about a transaction between 
+   a trader and marketmaker. *)
 type receive_transaction =  {
   timestamp : int;
   trade_type : string; (* hit the bid or lifted offer *)

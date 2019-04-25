@@ -1,5 +1,15 @@
+(** Command
+    Representation of the different commands that a player can input during 
+    the game.
+
+    This module contains the list of commands that are available to a player 
+    and has a function to parse the player's input into those commands that 
+    the machine can recognize. *)
+
+(*The type of the input by the player. *)
 type object_phrase = string list
 
+(*The legal commands that can be recognized. *)
 type command = 
   | Set of object_phrase   
   | Inventory  

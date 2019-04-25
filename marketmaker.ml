@@ -67,6 +67,7 @@ let init_market game : t =
     }
   }
 
+(*The type of result that comes from a command.*)
 type result = Legal of t | Illegal
 
 (**[display_data state] is a unit with side-effects of displaying data about 

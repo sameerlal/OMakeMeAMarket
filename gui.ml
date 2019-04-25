@@ -7,6 +7,7 @@ let tutorial_value = 100
 (*  TUTORIAL ALGORITHM TO ENSURE PLAYER MAKES PROGRESS TOWARDS THE PROPER 
     INTERVAL  *)
 
+(*Feedback type to be returned to player. *)
 type trade_feedback = Low | High | BigSpread | Okay
 
 (* [check_good_interval bid ask] is an option of either None or Some bool 
@@ -38,6 +39,8 @@ let eval_trade bid ask =
       "\nA lot of traders are lifting your offer (buying from you).
             This means they're buying for a low price, a bargain!  Adjust your market upwards.  \n"
 
+(**[parse_input_tut str] is the option that represents the commands input 
+   by the player. *)
 let parse_input_tut str = 
   let wordlst = String.split_on_char ' ' (String.trim str) in 
   let filtered = List.filter (fun s -> String.length s >= 1) wordlst in 
@@ -63,9 +66,11 @@ let query str =
       false
     else 
       begin 
-        if (List.length text = 1) then (print_endline "Quitting tutorial..."; false)
+        if (List.length text = 1) then (print_endline "Quitting tutorial..."; 
+                                        false)
         else 
-          let response = eval_trade (int_of_string (List.nth text 0)) (int_of_string (List.nth text 1)) in
+          let response = eval_trade (int_of_string (List.nth text 0)) 
+              (int_of_string (List.nth text 1)) in
           match (String.get response 0) with 
           | 'P' -> (print_endline response); false
           | _ -> (print_endline response); true
@@ -92,7 +97,7 @@ let tutorial_preamble unit =
     ("This means traders will BUY at y and SELL at x! \n \n");
   ANSITerminal.print_string [ANSITerminal.yellow] 
     ("Suppose your market is 'set 20 40'.  \n \nIn this case, the sell price of $20 is greater than the intrinsic value.  \nSellers get a great deal! They can sell something worth $10 for"
-      ^ "$20.  Expect a lot of sells.  Adjust your interval downwards.\n");
+     ^ "$20.  Expect a lot of sells.  Adjust your interval downwards.\n");
   ANSITerminal.print_string [ANSITerminal.yellow] 
     ("\nSuppose your market is 'set 5 8'.  \n \nIn this case, the buy price $8 is much less than " ^ "the intrinsic value of $10.  Buys are getting a bargain! Expect a lot of buys. Adjust your interval upwards.");
   ANSITerminal.print_string [ANSITerminal.yellow] 
@@ -100,7 +105,7 @@ let tutorial_preamble unit =
   ANSITerminal.print_string [ANSITerminal.yellow] 
     ("\n\n>>>> Starting tutorial <<<<  ");
   ANSITerminal.print_string [ANSITerminal.yellow] 
-  ("\nNow you try.  We won't tell you the actual price... \n");
+    ("\nNow you try.  We won't tell you the actual price... \n");
   tutorial_fsm ();
   ()
 
@@ -111,7 +116,7 @@ let preamble unit =
   ANSITerminal.print_string [ANSITerminal.black; ANSITerminal.yellow] 
     "Welcome! \n";
   ANSITerminal.(print_string [black; yellow]
-    "Welcome to the CamlCoin exchange! Here you will practice your maket making skills \n"); ()
+                  "Welcome to the CamlCoin exchange! Here you will practice your maket making skills \n"); ()
 let display_help unit =
   ANSITerminal.print_string [ANSITerminal.red; ANSITerminal.blue] 
     ("The list of possible commands are: ");

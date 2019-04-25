@@ -1,3 +1,11 @@
+(********************************************************************
+   Market Maker
+
+   The Market Maker module holds information about the MM's previous
+   bid asks spreads.  It also includes getters and setters and
+   basic statistics.  For more statistics, we draw from the statistics module.
+ ********************************************************************)
+
 open Pervasives
 open Sys
 

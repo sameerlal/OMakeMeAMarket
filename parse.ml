@@ -1,3 +1,8 @@
+(********************************************************************
+   Parser
+
+   The parser module parses the "fermi.json" file and extracts its fields.
+ ********************************************************************)
 open Yojson.Basic.Util
 open String
 

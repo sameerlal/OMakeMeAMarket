@@ -1,11 +1,12 @@
-(** Marketmaker
+(******************************************************************
+                            Marketmaker
     Representation of the marketmaker - player - during the course of the game.
 
     This module keeps track of the marketmaker's bid/ask prices and the 
     transactions that take place between the player and traders. It contains 
     structs to hold this data and has functions to implement changes to and 
     display the data.
-*)
+ ********************************************************************)
 (** The abstract type of values representing adventures. *)
 type bidask = {
   trade_type : string;

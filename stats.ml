@@ -9,6 +9,7 @@ open Marketmaker
   *    - Newton-Raphson Method for Curve approximation (Secant estimate)
   *    - Chebyschev Variance Probability Calculator
   *    - Markov Chain analysis using three features
+  *    - Graph Analysis
   *
   *             DATA ANALYSIS
   *    - Mean spread, bids, asks, trade count
@@ -17,6 +18,17 @@ open Marketmaker
   *     In implementaiton 1, the cheat command currently compares previous 
   *     bid/asks and uses a linear regression model to suggest the next move, 
   *     referencing the actual value.
+  *
+  *     In implementation II, the cheat command factors in a least-squares 
+  *    regression model to predict your next move.  It compares this to
+  *    the actual value of the dice roll.  Based off of your previous ask/bids
+  *    we apply a Gaussian blur matrix to this to find another average value.
+  *    We then use Chebyschev's inequality and the variance of your previous
+  *    moves to appropriately offset this second average from the expected 
+  *    rolls.  Finally, we incorporate the first average, subtract the two
+  *    and present that as a good guess for the next move.  
+  *    This is essentially the procedure a market maker would use to price 
+  *    the next bid/ask spread.
   *)
 
 (* 

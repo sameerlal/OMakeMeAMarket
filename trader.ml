@@ -1,3 +1,13 @@
+(********************************************************************
+   Trader 
+
+   The Trader module contains the trader type, getters and setters
+   as well as basic statistics analysis.  It also includes at least 
+   four AI methods which are used as the backend for trading opponents.
+   There is also a contention function which decides which trader
+   gets to trade if multiple traders wish to transact.
+ ********************************************************************)
+
 open Pervasives
 open Random
 

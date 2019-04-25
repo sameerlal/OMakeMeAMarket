@@ -178,53 +178,78 @@ let rec ask_acc (lst : Marketmaker.bidask list) acc =
 let text_capture (market : Marketmaker.t) =
   print_endline "Trace";
   ()
+(**[chebyshev_like_var var] Uses the normal variance of a float list, and
+    calculates chebyshevs variance  *)
+let chebyshev_like_var var =
+  match var with
+  |0. -> 0.
+  |_ -> 1. -. (1. -. (1./.(sqrt var)))
+
+
+(**[matr_helper row vector return] is the sum of the element-wise 
+   multiplications of [row] and [vector]. *)
+let rec matr_helper row vector return =
+  match row with
+  | [] -> return
+  | h::t -> matr_helper t (List.tl vector) h*(List.hd vector)+return
+
+(**[matr_mul mtr vector return] is the product of the matrices [mtr] which 
+   should be 3x3 and [vector] which should be 3x1. *)
+let rec matr_mul (mtr: int list list) (vector: int list) (return: int list) =
+  if List.length vector <> 3 then failwith "vector needs to be 3x1"
+  else
+    match mtr with
+    | [] -> return
+    | h::t -> if List.length h <> 3 
+      then failwith "mtr needs to be 3x3"
+      else matr_mul t vector ((matr_helper h vector 0)::return)
+
 
 (**[linear_reg_cheat market] is the linear regression of the bids or asks in 
    the market based on what the market has seen more of.  *)
-let linear_reg_cheat (market : Marketmaker.t ) (dice:dice_data)= 
-  Random.self_init ();
+let linear_reg_cheat (market : Marketmaker.t ) (dice:dice_data) = 
   let bid_list = (bid_acc (market.bid_ask_history) []) in
   let ask_list = (ask_acc (market.bid_ask_history) []) in
   if List.length bid_list > List.length ask_list  then
     (* Linear regression for asks *)
     if List.length ask_list < 3 then
       -1.0  else 
-      let guess = abs_float ((float_of_int dice.sum_rolls) -. 
-                 (last_three_lsr 
-                    ((List.nth ask_list 
-                        (List.length ask_list - 3))
-                     ::(List.nth ask_list 
-                          (List.length ask_list - 2))
-                     ::(List.nth ask_list 
-                          (List.length ask_list - 1))
-                     ::[])  )) in
-      let bot = if guess -. 5. <= 4. && guess +. 5. >= 24. then 4. else guess -. 5. in
-      let top = if guess -. 5. <= 4. && guess +. 5. >= 24.  then 24. else guess +. 5. in
-    print_endline (string_of_float guess);
-    print_endline (string_of_float bot);
-    print_endline (string_of_float top);
-        (Random.float (top -. bot)) +. bot
-        
+      let last_three = ((List.nth ask_list 
+                           (List.length ask_list - 3))
+                        ::(List.nth ask_list 
+                             (List.length ask_list - 2))
+                        ::(List.nth ask_list 
+                             (List.length ask_list - 1))
+                        ::[]) in
+      let raw_lsr = 
+        abs_float ( 
+          (last_three_lsr 
+             last_three ))
+      in 
+      (* Currently using a gaussian blur kernel on the last three values *)
+      let ans = matr_mul ((1::2::1::[])::(2::4::2::[])::(1::2::1::[])::[]) last_three [] in
+      abs_float ((float_of_int dice.sum_rolls) -.  0.3*.raw_lsr /. (chebyshev_like_var ( float_of_int ( List.nth ans 0) )))
   else 
     (*  Linear regression for bids*)
+    (* Linear regression for asks *)
   if List.length bid_list < 3 then
     -1.0  else 
-   let guess =  abs_float 
-      ((float_of_int dice.sum_rolls) -. 
-       (last_three_lsr 
-          ((List.nth bid_list 
-              (List.length ask_list - 3))
-           ::(List.nth bid_list 
-                (List.length ask_list - 2))
-           ::(List.nth bid_list 
-                (List.length ask_list - 1))
-           ::[])  )) in
-    print_endline (string_of_float guess);
-    let bot = if guess -. 5. <= 4. && guess +. 5. >= 24.  then 4. else guess -. 5. in
-    print_endline (string_of_float bot);      
-      let top = if guess -. 5. <= 4. && guess +. 5. >= 24.  then 24. else guess +. 5. in
-    print_endline (string_of_float top);
-        (Random.float (top -. bot)) +. bot
+    let last_three = ((List.nth bid_list 
+                         (List.length bid_list - 3))
+                      ::(List.nth bid_list 
+                           (List.length bid_list - 2))
+                      ::(List.nth bid_list 
+                           (List.length bid_list - 1))
+                      ::[]) in
+    let raw_lsr = 
+      abs_float ( 
+        (last_three_lsr 
+           last_three ))
+    in 
+    (* Currently using a gaussian blur kernel on the last three values *)
+    let ans = matr_mul ((1::2::1::[])::(2::4::2::[])::(1::2::1::[])::[]) last_three last_three in
+    abs_float ((float_of_int dice.sum_rolls) -.  0.3*.raw_lsr /. (chebyshev_like_var ( float_of_int ( List.nth ans 0) )))
+
 (**[count lst str acc] is the frequency of occurrence of [str] in [lst]. *)
 let rec count lst str acc =
   match lst with
@@ -241,31 +266,4 @@ let trade_freq market trader =
   let lifts = count trades "lift" 0 in
   let prnt = ["hits = "^(string_of_int hits); "lifts = "^(string_of_int lifts)] 
   in List.iter print_string prnt
-
-(**[chebyshev_like_var var] Uses the normal variance of a float list, and
-    calculates chebyshevs variance  *)
-let chebyshev_like_var var =
-  match var with
-  |0. -> 0.
-  |_ -> 1. -. (1. -. (1./.(sqrt var)))
-
-(**[matr_helper row vector return] is the sum of the element-wise 
-   multiplications of [row] and [vector]. *)
-let rec matr_helper row vector return =
-  match row with
-  | [] -> return
-  | h::t -> matr_helper t (List.tl vector) h*(List.hd vector)+return
-
-(**[matr_mul mtr vector return] is the product of the matrices [mtr] which 
-   should be 3x3 and [vector] which should be 3x1. *)
-let rec matr_mul (mtr: int list list) (vector: int list) (return: int list) =
-  if List.length mtr <> 3 then failwith "mtr needs to be 3x3"
-  else if List.length vector <> 3 then failwith "vector needs to be 3x1"
-  else
-    match mtr with
-    | [] -> return
-    | h::t -> if List.length h <> 3 
-      then failwith "mtr needs to be 3x3"
-      else matr_mul t vector ((matr_helper h vector 0)::return)
-
 

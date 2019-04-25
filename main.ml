@@ -90,7 +90,7 @@ let fsm fermi (state: big_state) =
     | Command.Cheat -> 
       print_endline( (
           let resp = Stats.linear_reg_cheat state.mmstate state.dice in 
-          if resp = infinity || resp = -1.0
+          if resp = infinity || resp = -1.0 || resp = nan
           then "No cheat available! "
           else 
             "According to our analysis, a good guess would be:  " ^ 

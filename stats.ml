@@ -224,7 +224,10 @@ let linear_reg_cheat (market : Marketmaker.t ) (dice:dice_data) =
       in 
       (* Currently using a gaussian blur kernel on the last three values *)
       let ans = matr_mul ((1::2::1::[])::(2::4::2::[])::(1::2::1::[])::[]) last_three [] in
-      abs_float ((float_of_int dice.sum_rolls) -.  0.3*.raw_lsr /. (chebyshev_like_var ( float_of_int ( List.nth ans 0) )))
+      abs_float ((float_of_int dice.sum_rolls) -.  0.3*.raw_lsr /. ( 
+          if (chebyshev_like_var( float_of_int ( List.nth ans 0) )) < 1.0 
+          then 1.0/.((chebyshev_like_var ( float_of_int ( List.nth ans 0) )))
+          else (chebyshev_like_var ( float_of_int ( List.nth ans 0) ))  ))
   else 
     (*  Linear regression for bids*)
     (* Linear regression for asks *)
@@ -244,7 +247,10 @@ let linear_reg_cheat (market : Marketmaker.t ) (dice:dice_data) =
     in 
     (* Currently using a gaussian blur kernel on the last three values *)
     let ans = matr_mul ((1::2::1::[])::(2::4::2::[])::(1::2::1::[])::[]) last_three last_three in
-    abs_float ((float_of_int dice.sum_rolls) -.  0.3*.raw_lsr /. (chebyshev_like_var ( float_of_int ( List.nth ans 0) )))
+    abs_float ((float_of_int dice.sum_rolls) -.  0.3*.raw_lsr /. (
+        if (chebyshev_like_var( float_of_int ( List.nth ans 0) )) < 1.0 
+        then 1.0/.((chebyshev_like_var ( float_of_int ( List.nth ans 0) )))
+        else (chebyshev_like_var ( float_of_int ( List.nth ans 0) ))  ))
 
 (**[count lst str acc] is the frequency of occurrence of [str] in [lst]. *)
 let rec count lst str acc =

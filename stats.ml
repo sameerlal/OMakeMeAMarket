@@ -36,8 +36,11 @@ let rec roll_list (num:int) (acc: int list) : (int list) =
   else 
     roll_list (num - 1) ((1 + Random.int 5)::acc)
 
+(**[get_player_roll d] gives the number the player rolled *)
 let get_player_roll (d:dice_data) : int = d.player_roll
 
+(**[mega_roll num_opp] gives dice data based on how many traders the player 
+    is going against  *)
 let mega_roll (num_opp:int) : dice_data =
   let playroll = (Random.int 5) + 1 in 
   let other_list = roll_list num_opp [] in
@@ -171,6 +174,7 @@ let rec ask_acc (lst : Marketmaker.bidask list) acc =
   | [] -> List.rev acc
   | h::t -> ask_acc t (h.ask::acc)
 
+(**[text_capture market] prints out "Trace" when called  *)
 let text_capture (market : Marketmaker.t) =
   print_endline "Trace";
   ()

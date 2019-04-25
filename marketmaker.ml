@@ -204,6 +204,7 @@ let stringify_bid_ask (market : t) =
   (string_of_int market.currbidask.bid) ^ "@" ^ 
   (string_of_int market.currbidask.ask)
 
+(**[get_timestamp market] is the value of the timestamp in the market  *)
 let get_timestamp (market : t) = 
   market.timestamp
 

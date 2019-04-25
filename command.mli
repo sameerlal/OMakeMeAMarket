@@ -22,4 +22,8 @@ type command =
 exception Empty
 exception Malformed
 
+(**[parse string] is the command type which a player wants to be acted upon. 
+   It takes in a string and converts it to a type of command.
+   Raises: Empty if no command given or just whitespace;
+           Malformed if not a recognized command;*)
 val parse: string -> command

@@ -1,4 +1,4 @@
-#require "oUnit";;
+#require "ounit";;
 #require "yojson";;
 #require "ANSITerminal";;
 #directory "_build";;

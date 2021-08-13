@@ -1,4 +1,4 @@
 B _build
-PKG oUnit
+PKG ounit2
 PKG yojson
 PKG ANSITerminal

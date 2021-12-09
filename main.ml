@@ -238,6 +238,6 @@ let main () =
 
 (**  Initiates the game with random seed chosen for demonstration purposes. *)
 let () = 
-  Random.init 70;
+  Random.self_init ();
   ANSITerminal.resize 150 240;
   main ()

@@ -1,0 +1,6 @@
+make --dry-run --always-make --keep-going --print-directory
+make: Entering directory `/Users/nicolashoeck/Documents/GitHub/OMakeMeAMarket_Updated'
+ocamlbuild -use-ocamlfind gui.cmo marketmaker.cmo trader.cmo command.cmo parse.cmo stats.cmo main.cmo authors.cmo
+utop
+make: Leaving directory `/Users/nicolashoeck/Documents/GitHub/OMakeMeAMarket_Updated'
+ 

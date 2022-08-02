@@ -1,3 +1,5 @@
+** Update, Python version here: https://github.com/sameerlal/MarketMakingGame
+
 ** Update (22Mar2022) - I'll spend some time in the upcoming weeks stabilizing this game / possibly migrating it, so please do not spend too much effort fixing bugs. Thanks - Sameer ** 
 
 # OMakeMeAMarket
